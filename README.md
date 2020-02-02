@@ -1,2 +1,6 @@
-# FinalProject
- 多源手机信息采集平台-毕设
+# <img src='./readme/icon.png' height="20" width="20" style='margin-right:20px'>多源手机信息采集平台(FinalDesign) ![GitHub license](https://img.shields.io/badge/license-GNUv3-blue.svg) ![react-native version](https://img.shields.io/badge/ReactNative-0.6.1-yellow.svg)
+
+多源手机信息采集平台是一款能够使用移动设备进行传感器信息采集、分析和可视化的软件。
+* **数据丰富：** 利用手机平台的传感器的多样性和可移动性，可以方便的在不同时间与空间进行大量的数据收集。可采集的数据有：[大气温度](https://developer.android.google.cn/reference/android/hardware/Sensor.html#TYPE_AMBIENT_TEMPERATURE)、[重力](https://developer.android.google.cn/reference/android/hardware/Sensor.html#TYPE_GRAVITY)、[环境地磁场](https://developer.android.google.cn/reference/android/hardware/Sensor.html#TYPE_MAGNETIC_FIELD)、[气压](https://developer.android.google.cn/reference/android/hardware/Sensor.html#TYPE_PRESSURE)、[相对湿度](https://developer.android.google.cn/reference/android/hardware/Sensor.html#TYPE_RELATIVE_HUMIDITY)、[设备温度](https://developer.android.google.cn/reference/android/hardware/Sensor.html#TYPE_TEMPERATURE)，详细传感器信息请访问[这个链接](https://developer.android.google.cn/guide/topics/sensors/sensors_overview)。
+* **多平台适应：** 本平台采用[ReactNative(v0.6.1)](https://reactnative.cn/)进行手机端的程序编写，React Native允许我们使用[TypeScript(v3.7)](https://www.typescriptlang.org/)语言进行多端原生UI组件的编写，与此同时还可以使用Native Module 进行手动封装模块代码。后端采用Express + nodejs 进行
+* **数据可视化：** 
