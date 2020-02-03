@@ -1,8 +1,10 @@
 import React from 'react';
 import {Text} from 'react-native';
+import {withNavigationFocus} from 'react-navigation';
 
-export default class SettingScreen extends React.Component {
+class SettingScreen extends React.Component<any, any> {
   render() {
-    return <Text>设置</Text>;
+    return this.props.isFocused && <Text>设置</Text>;
   }
 }
+export default withNavigationFocus(SettingScreen);

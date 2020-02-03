@@ -31,4 +31,5 @@
 * 错误原因：因为要导入sensors包，expo install expo-sensors，所以需要安装expo-cli。安装expocli的时候出现这种错误。
 * 解决方法：sudo npm install --unsafe-perm=true --allow-root ([链接](https://blog.csdn.net/testcs_dn/article/details/78869419))
 
+2. react-navigation-tabs 切换闪一下白屏
 ## 参考文献
