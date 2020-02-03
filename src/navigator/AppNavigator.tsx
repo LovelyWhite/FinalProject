@@ -4,7 +4,6 @@ import React from 'react';
 import {Text, Button, View} from 'react-native';
 import Page1 from '../pages/page1';
 import Page2 from '../pages/page2';
-import {createAppContainer} from 'react-navigation';
 class HomePage extends React.Component<{navigation: any}> {
   render() {
     return (
@@ -63,4 +62,4 @@ const AppNavigator = createStackNavigator(
     initialRouteName: 'Home',
   },
 );
-export default createAppContainer(AppNavigator);
+export default AppNavigator;
