@@ -1,65 +1,79 @@
 /* eslint-disable react-native/no-inline-styles */
 import {createStackNavigator} from 'react-navigation-stack';
+import {createBottomTabNavigator} from 'react-navigation-tabs';
+import PositionScreen from '../pages/tab/Position';
+import SettingScreen from '../pages/tab/Setting';
+import Icon from 'react-native-vector-icons/Ionicons';
 import React from 'react';
-import {Text, Button, View} from 'react-native';
-import Page1 from '../pages/page1';
-import Page2 from '../pages/page2';
-class HomePage extends React.Component<{navigation: any}> {
-  render() {
-    return (
-      <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-        <Text>HomePage</Text>
-        <Button
-          title="Go to Page1"
-          onPress={() => this.props.navigation.navigate('Page1')}
-        />
-        <Button
-          title="Go to Page2"
-          onPress={() => this.props.navigation.navigate('Page2')}
-        />
-      </View>
-    );
-  }
-}
-const AppNavigator = createStackNavigator(
+import {Text, StyleSheet, View} from 'react-native';
+
+const TabNavigator = createBottomTabNavigator(
   {
-    Home: {
-      screen: HomePage,
-      navigationOptions: () => ({
-        title: 'home',
-      }),
+    Position: {
+      screen: PositionScreen,
     },
-    Page1: {
-      screen: Page1,
-      navigationOptions: () => ({
-        title: 'page1',
-        headerBackTitleVisible: true,
-      }),
+    Setting: {
+      screen: SettingScreen,
     },
-    Page2: {
-      screen: Page2,
-      navigationOptions: props => {
-        const {navigation} = props;
-        const {state, setParams} = navigation;
-        const {params} = state;
-        return {
-          title: params && params.title ? params.title : 'abc',
-          headerRight: () => (
-            <Button
-              title={params && params.mode === 'edit' ? '保存' : '编辑'}
-              onPress={() =>
-                setParams({
-                  mode: params && params.mode === 'edit' ? '' : '保存',
-                })
-              }
-            />
-          ),
-        };
+  },
+  {
+    lazy: true,
+    defaultNavigationOptions: ({navigation}) => ({
+      tabBarIcon: ({focused, horizontal, tintColor}) => {
+        const {routeName} = navigation.state;
+        let iconName = '';
+        if (routeName === 'Position') {
+          iconName = 'ios-pin';
+        } else if (routeName === 'Setting') {
+          iconName = 'ios-settings';
+        }
+        let badgeCount = 1;
+        return (
+          <View>
+            <Icon name={iconName} size={30} color={tintColor} />
+            <View style={style.badge}>
+              <Text style={{color: 'white', fontSize: 10, fontWeight: 'bold'}}>
+                {badgeCount}
+              </Text>
+            </View>
+          </View>
+        );
       },
-    },
+      tabBarLabel: () => {
+        const {routeName} = navigation.state;
+        if (routeName === 'Position') {
+          return <Text style={style.tabBar}>位置</Text>;
+        } else if (routeName === 'Setting') {
+          return <Text style={style.tabBar}>设置</Text>;
+        }
+      },
+    }),
+  },
+);
+const StackNavigator = createStackNavigator(
+  {
+    a: TabNavigator,
   },
   {
     initialRouteName: 'Home',
   },
 );
-export default AppNavigator;
+const style = StyleSheet.create({
+  tabBar: {
+    textAlign: 'center',
+    color: '#99A9BF',
+    fontSize: 13,
+  },
+  badge: {
+    position: 'absolute',
+    right: -8,
+    top: -8,
+    backgroundColor: 'red',
+    borderRadius: 8,
+    width: 16,
+    height: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
+export {StackNavigator, TabNavigator};

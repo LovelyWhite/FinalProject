@@ -13,12 +13,16 @@
     "@react-native-community/masked-view": "^0.1.6",
     "react": "16.9.0",
     "react-native": "0.61.5",
+    "react-native-baidu-map": "^1.0.26",
+    "react-native-elements": "^1.2.7",
     "react-native-gesture-handler": "^1.5.3",
     "react-native-reanimated": "^1.7.0",
     "react-native-safe-area-context": "^0.6.4",
     "react-native-screens": "^2.0.0-alpha.32",
+    "react-native-vector-icons": "^6.6.0",
     "react-navigation": "^4.1.0",
-    "react-navigation-stack": "^2.0.16"
+    "react-navigation-stack": "^2.0.16",
+    "react-navigation-tabs": "^2.7.0"
   },
   "devDependencies": {
     "@babel/core": "^7.6.2",
@@ -27,6 +31,7 @@
     "@types/jest": "^25.1.1",
     "@types/react": "^16.9.19",
     "@types/react-native": "^0.61.10",
+    "@types/react-native-vector-icons": "^6.4.5",
     "@types/react-test-renderer": "^16.9.2",
     "babel-jest": "^24.9.0",
     "eslint": "^6.5.1",
