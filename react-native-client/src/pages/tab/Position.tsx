@@ -3,6 +3,8 @@ import React from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {Button} from 'react-native-elements';
 import {StyleSheet, Alert, View, Text} from 'react-native';
+import {serverAdress} from '../../app.json';
+import WebView from 'react-native-webview'
 
 class PositionScreen extends React.Component<any, any> {
   constructor(props: any) {
@@ -15,6 +17,7 @@ class PositionScreen extends React.Component<any, any> {
       },
     };
   }
+
   detectPosition() {
     this.setState({
       reGeo: true,
@@ -58,8 +61,14 @@ class PositionScreen extends React.Component<any, any> {
     return tempNumStr;
   }
   render() {
+    console.log(serverAdress)
     return (
       <View style={{width: '100%', height: '100%'}}>
+        <WebView
+        source={{uri:serverAdress+'page/bd-map'}}
+        >
+
+        </WebView>
         <Button
           style={style.controlerButton}
           onPress={this.detectPosition.bind(this)}

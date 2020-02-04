@@ -1,4 +1,5 @@
 {
   "name": "FinalProject",
-  "displayName": "FinalProject"
+  "displayName": "FinalProject",
+  "serverAdress":"http://localhost:3001/"
 }

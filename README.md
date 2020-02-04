@@ -26,19 +26,46 @@ bd-map|GET|-|获取自定义百度地图
 ## 随笔
 本项目是一个毕业设计项目，也是我的第一个React-Native 项目。其中的内容难免会有些错误，欢迎大家提Issue，我也会认真的完成这个项目的。觉得还不错的话欢迎Star，本人博客地址：[一只小白喵的进阶之路](https://lovelywhite.cn/)。
 
-## 版权声明
-
-本软件遵循GNUv3开源协议。
-
 ## 踩坑记录
 
 1. expo-cli 安装的时候出错
 
 * 错误内容：npm ERR! Error: EACCES: permission denied, access
 ![expo-cli1](./readme/error/expo-cli1.png)
-* 错误原因：因为要导入sensors包，expo install expo-sensors，所以需要安装expo-cli。安装expocli的时候出现这种错误。
+* 错误起因：因为要导入sensors包，expo install expo-sensors，所以需要安装expo-cli。安装expocli的时候出现这种错误。
 * 解决方法：sudo npm install --unsafe-perm=true --allow-root ([链接](https://blog.csdn.net/testcs_dn/article/details/78869419))
 
 2. react-navigation-tabs 切换闪一下白屏
 
-## 参考文献
+3. typescript 导入不了json模块
+
+* 错误内容：Cannot find module '../../app.json'. Consider using '--resolveJsonModule' to import module with '.json' extension![json1](./readme/error/json1.png)
+* 错误起因：需要使用JSON当中的常量字符串，发现导入不了
+* 解决方法：在tsconfig.json中加入"resolveJsonModule":true 就可解决
+
+4. ejs找不到模板
+
+* 错误内容：Error: Failed to lookup view "bd-map.ejs" in views directory "./page"![ejs1](./readme/error/ejs1.png)
+* 错误起因：-
+* 解决方法：原来app.set('views', './page')语句的第二个参数的相对路径为项目目录而不是server.ts的目录，把./page 改成 ./src/page 就可以了。
+
+5. 手机端载入不了计算机建立的express服务器
+
+* 错误内容：无
+* 错误起因：无
+* 解决方法：使用adb reverse tcp:3000(手机端) tcp:3000(计算机端)将计算机的3000端反代到手机的3001端口
+
+6. ---------------
+
+* 错误内容：
+* 错误起因：
+* 解决方法：
+## 参考
+
+### 视频
+
+* [Nodejs+Express+Mongo实战TodoList(共17讲)](https://www.bilibili.com/video/av20196752)
+
+## 版权声明
+
+本软件遵循GNUv3开源协议。
