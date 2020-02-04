@@ -27,15 +27,18 @@ bd-map|GET|-|获取自定义百度地图
 本项目是一个毕业设计项目，也是我的第一个React-Native 项目。其中的内容难免会有些错误，欢迎大家提Issue，我也会认真的完成这个项目的。觉得还不错的话欢迎Star，本人博客地址：[一只小白喵的进阶之路](https://lovelywhite.cn/)。
 
 ## 版权声明
+
 本软件遵循GNUv3开源协议。
 
 ## 踩坑记录
+
 1. expo-cli 安装的时候出错
 
 * 错误内容：npm ERR! Error: EACCES: permission denied, access
-![](./readme/error/expo-cli1.png)
+![expo-cli1](./readme/error/expo-cli1.png)
 * 错误原因：因为要导入sensors包，expo install expo-sensors，所以需要安装expo-cli。安装expocli的时候出现这种错误。
 * 解决方法：sudo npm install --unsafe-perm=true --allow-root ([链接](https://blog.csdn.net/testcs_dn/article/details/78869419))
 
-2. react-navigation-tabs 切换闪一下白屏
+1. react-navigation-tabs 切换闪一下白屏
+
 ## 参考文献
