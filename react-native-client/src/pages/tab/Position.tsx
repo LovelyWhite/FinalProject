@@ -1,39 +1,10 @@
 import React from 'react';
-import {
-  MapView,
-  MapTypes,
-  Geolocation,
-  Overlay,
-  MapApp,
-} from 'react-native-baidu-map';
-import {withNavigationFocus} from 'react-navigation';
 
 import Icon from 'react-native-vector-icons/Ionicons';
-import {Button, Card} from 'react-native-elements';
+import {Button} from 'react-native-elements';
 import {StyleSheet, Alert, View, Text} from 'react-native';
-interface GeoResult {
-  address: String;
-  altitude: number;
-  buildingId: null;
-  buildingName: null;
-  city: String;
-  cityCode: String;
-  country: String;
-  countryCode: String;
-  direction: number;
-  district: String;
-  latitude: number;
-  longitude: number;
-  province: String;
-  radius: number;
-  speed: number;
-  street: String;
-  streetNumber: String;
-}
-class PositionScreen extends React.Component<
-  any,
-  {geo: GeoResult | {}; reGeo: boolean}
-> {
+
+class PositionScreen extends React.Component<any, any> {
   constructor(props: any) {
     super(props);
     this.state = {
@@ -44,11 +15,6 @@ class PositionScreen extends React.Component<
       },
     };
   }
-
-  componentDidMount() {
-    this.detectPosition();
-  }
-
   detectPosition() {
     this.setState({
       reGeo: true,
@@ -93,39 +59,20 @@ class PositionScreen extends React.Component<
   }
   render() {
     return (
-      <>
-        <View>
-          {this.props.isFocused && (
-            <MapView
-              style={style.mapStyle}
-              center={{
-                latitude: this.state.geo.latitude,
-                longitude: this.state.geo.longitude,
-              }}
-              zoom={16}
-              zoomControlsVisible={false}
-              scrollGesturesEnabled={false}
-              showsUserLocation={true}
-              zoomGesturesEnabled={false}
-              mapType={1}
-            />
-          )}
-        </View>
-        <Card
-          containerStyle={style.controler}
-          titleStyle={style.controlerTitle}
-          title={'控制台'}>
+      <View style={{width: '100%', height: '100%'}}>
+        <Button
+          style={style.controlerButton}
+          onPress={this.detectPosition.bind(this)}
+          loading={this.state.reGeo}
+          icon={<Icon name="ios-sync" size={23} color="#FFFFFF" />}
+        />
+        <View style={style.controler}>
           <Text>address:{this.state.geo.address}</Text>
           <Text>longitude:{this.toNumber(this.state.geo.longitude)}</Text>
           <Text>latitude:{this.toNumber(this.state.geo.latitude)}</Text>
           <Text>cityCode:{this.state.geo.cityCode}</Text>
-          <Button
-            onPress={this.detectPosition.bind(this)}
-            loading={this.state.reGeo}
-            icon={<Icon name="ios-sync" size={23} color="#FFFFFF" />}
-          />
-        </Card>
-      </>
+        </View>
+      </View>
     );
   }
 }
@@ -133,22 +80,19 @@ const style = StyleSheet.create({
   mapStyle: {
     width: '100%',
     height: '100%',
+    zIndex: -10,
   },
   controler: {
     position: 'absolute',
-    top: 4,
-    right: 5,
+    top: 0,
+    right: 0,
     backgroundColor: '#E5E9F2AA',
-    width: '60%',
-    height: '50%',
-    margin: 3,
-    padding: 3,
   },
-  controlerTitle: {
-    fontSize: 13,
-    color: '#99A9BF',
-    marginBottom: 0,
-    padding: 0,
+  controlerButton: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    backgroundColor: '#E5E9F2AA',
   },
 });
-export default withNavigationFocus(PositionScreen);
+export default PositionScreen;

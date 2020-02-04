@@ -2,7 +2,6 @@ import React from 'react';
 import {Magnetometer} from 'expo-sensors';
 import {Subscription} from '@unimodules/core';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {withNavigationFocus} from 'react-navigation';
 
 class RecodingScreen extends React.Component<any, any> {
   _subscription: Subscription | null;
@@ -106,4 +105,4 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
 });
-export default withNavigationFocus(RecodingScreen);
+export default RecodingScreen;
