@@ -3,7 +3,7 @@ import {Magnetometer} from 'expo-sensors';
 import {Subscription} from '@unimodules/core';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
-class RecodingScreen extends React.Component<any, any> {
+export default class RecodingScreen extends React.Component<any, any> {
   _subscription: Subscription | null;
   constructor(props: any) {
     super(props);
@@ -54,27 +54,25 @@ class RecodingScreen extends React.Component<any, any> {
     let {x, y, z} = this.state.MagnetometerData;
 
     return (
-      this.props.isFocused && (
-        <View style={styles.sensor}>
-          <Text>磁力计:</Text>
-          <Text>x: {x}</Text>
-          <Text>y: {y}</Text>
-          <Text>z: {z}</Text>
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity onPress={this._toggle} style={styles.button}>
-              <Text>切换</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={this._slow}
-              style={[styles.button, styles.middleButton]}>
-              <Text>低速</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={this._fast} style={styles.button}>
-              <Text>高速</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      )
+      <View style={styles.sensor}>
+      <Text>磁力计:</Text>
+      <Text>x: {x}</Text>
+      <Text>y: {y}</Text>
+      <Text>z: {z}</Text>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity onPress={this._toggle} style={styles.button}>
+          <Text>切换</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={this._slow}
+          style={[styles.button, styles.middleButton]}>
+          <Text>低速</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={this._fast} style={styles.button}>
+          <Text>高速</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
     );
   }
 }
@@ -105,4 +103,3 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
 });
-export default RecodingScreen;

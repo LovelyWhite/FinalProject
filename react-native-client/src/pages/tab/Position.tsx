@@ -3,10 +3,11 @@ import React from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {Button} from 'react-native-elements';
 import {StyleSheet, Alert, View, Text} from 'react-native';
+// import GpsInfo from 'react-native-gps-info'
 import {serverAdress} from '../../app.json';
 import WebView from 'react-native-webview'
 
-class PositionScreen extends React.Component<any, any> {
+export default class PositionScreen extends React.Component<any, any> {
   constructor(props: any) {
     super(props);
     this.state = {
@@ -19,34 +20,7 @@ class PositionScreen extends React.Component<any, any> {
   }
 
   detectPosition() {
-    this.setState({
-      reGeo: true,
-    });
-    Geolocation.getCurrentPosition('bd09ll')
-      .then((res: GeoResult) => {
-        if (res.latitude === 5e-324) {
-          throw Error('定位失败');
-        }
-        Alert.alert('提示', '位置加载成功', [{text: '确定'}], {
-          cancelable: false,
-        });
-        this.setState({geo: res}, () => {
-          console.log(res);
-        });
-      })
-      .catch((res: GeoResult) => {
-        Alert.alert(
-          '提示',
-          '位置加载失败，请检查GPS是否开启，重新加载？',
-          [{text: '确定', onPress: () => this.detectPosition()}],
-          {cancelable: false},
-        );
-      })
-      .finally(() => {
-        this.setState({
-          reGeo: false,
-        });
-      });
+    // GpsInfo.openGps()
   }
   toNumber(num: number) {
     let numStr = num.toString();
@@ -104,4 +78,4 @@ const style = StyleSheet.create({
     backgroundColor: '#E5E9F2AA',
   },
 });
-export default PositionScreen;
+

@@ -45,15 +45,21 @@ bd-map|GET|-|获取自定义百度地图
 
 4. ejs找不到模板
 
-* 错误内容：Error: Failed to lookup view "bd-map.ejs" in views directory "./page"![ejs1](./readme/error/ejs1.png)
+* 错误内容：Error: Failed to lookup view "bd-map.ejs" in views directory"./page" ![ejs1](./readme/error/ejs1.png)
 * 错误起因：-
 * 解决方法：原来app.set('views', './page')语句的第二个参数的相对路径为项目目录而不是server.ts的目录，把./page 改成 ./src/page 就可以了。
 
 5. 手机端载入不了计算机建立的express服务器
 
-* 错误内容：无
-* 错误起因：无
+* 错误内容：-
+* 错误起因：-
 * 解决方法：使用adb reverse tcp:3000(手机端) tcp:3000(计算机端)将计算机的3000端反代到手机的3001端口
+
+6. yarn 安装全局包后找不到命令
+
+* 错误内容：-
+* 错误起因：安装 yarn global add create-react-native-module 后无法使用。![yarn1](./readme/error/yarn1.png)
+* 解决方法：我使用的是zsh，没有配置yarn的执行目录，将export PATH="$PATH:`yarn global bin`:$HOME/.config/yarn/global/node_modules/.bin"添加到~/.zshrc文件即可
 
 6. ---------------
 
