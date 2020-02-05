@@ -6,8 +6,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
+import android.os.Bundle;
 import android.provider.Settings;
 
 import androidx.core.app.ActivityCompat;
@@ -15,9 +17,12 @@ import androidx.core.app.ActivityCompat;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableArray;
+import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.facebook.react.modules.core.PermissionListener;
 
 import org.jetbrains.annotations.NotNull;
@@ -29,22 +34,36 @@ import javax.annotation.Nullable;
 
 
 public class GpsInfoModule extends ReactContextBaseJavaModule {
-
+    LocationListener locationListener;
     private final ReactApplicationContext reactContext;
     LocationManager locationManager;
-    String location_provider;
-    Promise location_promise;
-
-    public String getLocation_provider() {
-        return location_provider;
-    }
-
-    public Promise getLocation_promise() {
-        return location_promise;
-    }
+    String startListenProvider;
+    Promise startListenPromise;
 
     public GpsInfoModule(ReactApplicationContext reactContext) {
         super(reactContext);
+        locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                sendEvent(reactContext,"onLocationChanged",location.toString());
+                System.out.println(location.toString());
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+
+            }
+        };
         this.reactContext = reactContext;
         locationManager = (LocationManager) reactContext.getSystemService(Context.LOCATION_SERVICE);
     }
@@ -77,10 +96,17 @@ public class GpsInfoModule extends ReactContextBaseJavaModule {
     }
     @SuppressLint("MissingPermission")
     @ReactMethod
-    public void getLastKnownLocation(String provider, Promise promise) {
-        this.location_promise = promise;
-        this.location_provider = provider;
-        Location location = locationManager.getLastKnownLocation(provider);
-        location_promise.resolve(location.toString());
+    public void startListen(String provider, Promise promise) {
+        this.startListenPromise = promise;
+        this.startListenProvider = provider;
+        locationManager.requestLocationUpdates("gps",1000,0,locationListener);
+        promise.resolve("aa");
+    }
+    private void sendEvent(ReactContext reactContext,
+                           String eventName,
+                           @Nullable Object params) {
+        reactContext
+                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                .emit(eventName, params);
     }
 }

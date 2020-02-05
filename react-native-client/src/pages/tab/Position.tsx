@@ -2,11 +2,12 @@ import React from 'react';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Button } from 'react-native-elements';
-import { StyleSheet, Alert, View, Text } from 'react-native';
+import { StyleSheet, Alert, View, Text, NativeEventEmitter, NativeModules } from 'react-native';
 import { serverAdress } from '../../app.json';
 import WebView from 'react-native-webview'
 import { request as requestPermission, PERMISSIONS } from 'react-native-permissions';
-import GpsInfo from '../../custom/GpsInfo/index'
+import GpsInfo,{addLocationChangedListener} from '../../custom/GpsInfo/index'
+import { event } from 'react-native-reanimated';
 
 export default class PositionScreen extends React.Component<any, any> {
   constructor(props: any) {
@@ -19,14 +20,18 @@ export default class PositionScreen extends React.Component<any, any> {
       },
     };
   }
+  componentDidMount() {
+  }
   detectPosition() {
     Promise.all([
       requestPermission(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION),
       requestPermission(PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION),
     ]).then(([a, b]) => {
       if (a === 'granted' && b === 'granted') {
-        GpsInfo.getLastKnownLocation('gps').then(res => {
-          console.log(res)
+        GpsInfo.startListen('gps').then(res => {
+         addLocationChangedListener((event)=>{
+            Alert.alert("aa",event)
+          })
         });
       }
     });
