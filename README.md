@@ -35,42 +35,42 @@ bd-map|GET|-|获取自定义百度地图
 * 错误起因：因为要导入sensors包，expo install expo-sensors，所以需要安装expo-cli。安装expocli的时候出现这种错误。
 * 解决方法：sudo npm install --unsafe-perm=true --allow-root ([链接](https://blog.csdn.net/testcs_dn/article/details/78869419))
 
-2. react-navigation-tabs 切换闪一下白屏
-
-3. typescript 导入不了json模块
+2. typescript 导入不了json模块
 
 * 错误内容：Cannot find module '../../app.json'. Consider using '--resolveJsonModule' to import module with '.json' extension![json1](./readme/error/json1.png)
 * 错误起因：需要使用JSON当中的常量字符串，发现导入不了
-* 解决方法：在tsconfig.json中加入"resolveJsonModule":true 就可解决
+* 解决方法：在tsconfig.json中加入"resolveJsonModule":true 就可解决。
 
-4. ejs找不到模板
+3. ejs找不到模板
 
 * 错误内容：Error: Failed to lookup view "bd-map.ejs" in views directory"./page" ![ejs1](./readme/error/ejs1.png)
 * 错误起因：-
 * 解决方法：原来app.set('views', './page')语句的第二个参数的相对路径为项目目录而不是server.ts的目录，把./page 改成 ./src/page 就可以了。
 
-5. 手机端载入不了计算机建立的express服务器
+4. 手机端载入不了计算机建立的express服务器
 
 * 错误内容：-
 * 错误起因：-
-* 解决方法：使用adb reverse tcp:3000(手机端) tcp:3000(计算机端)将计算机的3000端反代到手机的3001端口
+* 解决方法：使用adb reverse tcp:3000(手机端) tcp:3000(计算机端)将计算机的3000端反代到手机的3001端口。
 
-6. yarn 安装全局包后找不到命令
+5. yarn 安装全局包后找不到命令
 
 * 错误内容：-
 * 错误起因：安装 yarn global add create-react-native-module 后无法使用。![yarn1](./readme/error/yarn1.png)
-* 解决方法：我使用的是zsh，没有配置yarn的执行目录，将export PATH="$PATH:`yarn global bin`:$HOME/.config/yarn/global/node_modules/.bin"添加到~/.zshrc文件即可
+* 解决方法：我使用的是zsh，没有配置yarn的执行目录，将export PATH="$PATH:`yarn global bin`:$HOME/.config/yarn/global/node_modules/.bin"添加到~/.zshrc文件即可。
 
-6. ---------------
+6. getLastKnownLocation() 返回为null
 
-* 错误内容：
-* 错误起因：
-* 解决方法：
+* 错误内容：-
+* 错误起因：编写gps-info native模块需要获取定位数据
+* 解决方法：根据资料显示，90%的时候该方法都返回为null，所以我们不能使用这个方法来获取位置，而是使用监听位置变动的方法。LocationListener最好在Activity的onCreate（）方法中进行实例化，当GPS获得Location时，会自 动调用onLocationChanged方法。
+
 ## 参考
 
 ### 视频
 
 * [Nodejs+Express+Mongo实战TodoList(共17讲)](https://www.bilibili.com/video/av20196752)
+* [Create native modules in react native for android | free code tutorials](https://www.youtube.com/watch?v=OEV3iArNpTM)
 
 ## 版权声明
 
