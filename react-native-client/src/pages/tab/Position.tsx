@@ -1,13 +1,15 @@
 import React from 'react';
 
 import Icon from 'react-native-vector-icons/Ionicons';
-import { Button } from 'react-native-elements';
-import { StyleSheet, Alert, View, Text, NativeEventEmitter, NativeModules } from 'react-native';
-import { serverAdress } from '../../app.json';
-import WebView from 'react-native-webview'
-import { request as requestPermission, PERMISSIONS } from 'react-native-permissions';
-import GpsInfo,{addLocationChangedListener} from '../../custom/GpsInfo/index'
-import { event } from 'react-native-reanimated';
+import {Button} from 'react-native-elements';
+import {StyleSheet, View, Text} from 'react-native';
+import {serverAdress} from '../../app.json';
+import WebView from 'react-native-webview';
+import {
+  request as requestPermission,
+  PERMISSIONS,
+} from 'react-native-permissions';
+import GpsInfo, {addLocationChangedListener} from '../../custom/GpsInfo/index';
 
 export default class PositionScreen extends React.Component<any, any> {
   constructor(props: any) {
@@ -20,8 +22,7 @@ export default class PositionScreen extends React.Component<any, any> {
       },
     };
   }
-  componentDidMount() {
-  }
+  componentDidMount() {}
   detectPosition() {
     Promise.all([
       requestPermission(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION),
@@ -29,14 +30,13 @@ export default class PositionScreen extends React.Component<any, any> {
     ]).then(([a, b]) => {
       if (a === 'granted' && b === 'granted') {
         GpsInfo.startListen('gps').then(res => {
-         addLocationChangedListener((event)=>{
-            Alert.alert("aa",event)
-          })
+          addLocationChangedListener(event => {
+            console.log(event);
+            // this.refs.webview.postMessage(JSON.stringify(this.state.geo));
+          });
         });
       }
     });
-
-
   }
   toNumber(num: number) {
     let numStr = num.toString();
@@ -51,14 +51,16 @@ export default class PositionScreen extends React.Component<any, any> {
     return tempNumStr;
   }
   render() {
-    console.log(serverAdress)
+    console.log(serverAdress);
     return (
-      <View style={{ width: '100%', height: '100%' }}>
+      <View style={{width: '100%', height: '100%'}}>
         <WebView
-          source={{ uri: serverAdress + 'page/bd-map' }}
-        >
-
-        </WebView>
+          ref={'webview'}
+          source={{uri: serverAdress + 'page/bd-map'}}
+          onLoadEnd={() => {
+            this.state.webview = this.refs.webview;
+          }}
+        />
         <Button
           style={style.controlerButton}
           onPress={this.detectPosition.bind(this)}
@@ -94,4 +96,3 @@ const style = StyleSheet.create({
     backgroundColor: '#E5E9F2AA',
   },
 });
-

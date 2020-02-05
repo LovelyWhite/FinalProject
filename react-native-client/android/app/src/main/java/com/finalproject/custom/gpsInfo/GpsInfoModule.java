@@ -45,8 +45,13 @@ public class GpsInfoModule extends ReactContextBaseJavaModule {
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                sendEvent(reactContext,"onLocationChanged",location.toString());
-                System.out.println(location.toString());
+
+                WritableMap map = Arguments.createMap();
+                map.putString("provider",location.getProvider());
+                map.putDouble("altitude",location.getAltitude());
+                map.putDouble("longitude",location.getLongitude());
+                map.putDouble("time",location.getTime());
+                sendEvent(reactContext,"onLocationChanged",map);
             }
 
             @Override
@@ -99,7 +104,7 @@ public class GpsInfoModule extends ReactContextBaseJavaModule {
     public void startListen(String provider, Promise promise) {
         this.startListenPromise = promise;
         this.startListenProvider = provider;
-        locationManager.requestLocationUpdates("gps",1000,0,locationListener);
+        locationManager.requestLocationUpdates("gps",3000,0,locationListener);
         promise.resolve("aa");
     }
     private void sendEvent(ReactContext reactContext,
