@@ -17,9 +17,6 @@ export function addLocationChangedListener(fun) {
         })
     }
     )
-
-
-
 }
 
 export default GpsInfo;

@@ -15,15 +15,70 @@
 
 ### 服务器端
 
-## 接口定义
-### 服务器端
+## 消息传递
+
+* **Android<->ReactNative**
+
+    可通过ReactNative NativeModule中被`@ReactMethod`注释的方法。
   
+  ```java
+    //Android
+    @ReactMethod
+    public void isListening(String str,Promise promise){
+        if(locationListener == null){
+            promise.resolve(false);
+        }
+        else
+        {
+            promise.resolve(true);
+        }
+    }
+    ```
+
+  ```typescript
+    //ReactNative
+    export function isListening(str:string): Promise<boolean>
+
+    ```
+
+    通过此方法传入的参数可向Android同名方法传参比如`str`，通过`Promise`对象可向ReactNative发送一个`Object`，比如`boolean`。
+
+* **ReactNative->WebView**
+
+  ```javascript
+    //ReactNative端
+    <WebView
+        ref={'webview'}
+        source={{ uri: serverAdress + 'page/bd-map' }}
+        onLoadEnd={() => {
+          this.state.webview = this.refs.webview;
+        }}
+      />
+  ```
+
+  当初始化一个webview组件的时候将该组件的`ref`存入`state`当中保存起来，之后可用该真实对象`this.state.webview`的`postMessage(str:string)`方法向webview注入消息。
+  
+  ```javascript
+    //webview端
+     document.addEventListener("message", function(event) {
+    let data = event.data;
+    let obj = JSON.parse(data);
+    obj.fun && eval(obj.fun + "(" + data + ")");
+  });
+  ```
+  
+  webview端在dom初始化以后注册一个`message`事件的监听器，通过该监听器即可响应`postMessage`方法传过来的内容。
+
+## 服务器接口定义
+
 请求前缀 ：http://localhost:3000/api/{module}
 
 |module|提交方式|参数|描述|
-:-: | :-: | :-: | :-: | 
+:-: | :-: | :-: | :-: |
 bd-map|GET|-|获取自定义百度地图
+
 ## 随笔
+
 本项目是一个毕业设计项目，也是我的第一个React-Native 项目。其中的内容难免会有些错误，欢迎大家提Issue，我也会认真的完成这个项目的。觉得还不错的话欢迎Star，本人博客地址：[一只小白喵的进阶之路](https://lovelywhite.cn/)。
 
 ## 踩坑记录
