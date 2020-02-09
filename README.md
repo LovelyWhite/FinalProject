@@ -86,19 +86,24 @@ bd-map|GET|-|获取自定义百度地图
 **1. expo-cli 安装的时候出错**
 
 * 错误内容：npm ERR! Error: EACCES: permission denied, access
+
 ![expo-cli1](./readme/error/expo-cli1.png)
 * 错误起因：因为要导入sensors包，expo install expo-sensors，所以需要安装expo-cli。安装expocli的时候出现这种错误。
 * 解决方法：sudo npm install --unsafe-perm=true --allow-root ([链接](https://blog.csdn.net/testcs_dn/article/details/78869419))
 
 **2. typescript 导入不了json模块**
 
-* 错误内容：Cannot find module '../../app.json'. Consider using '--resolveJsonModule' to import module with '.json' extension![json1](./readme/error/json1.png)
+* 错误内容：Cannot find module '../../app.json'. Consider using '--resolveJsonModule' to import module with '.json' extension
+
+![json1](./readme/error/json1.png)
 * 错误起因：需要使用JSON当中的常量字符串，发现导入不了
 * 解决方法：在`tsconfig.json`中加入"resolveJsonModule":true 就可解决。
 
 **3. ejs找不到模板**
 
-* 错误内容：Error: Failed to lookup view "bd-map.ejs" in views directory"./page" ![ejs1](./readme/error/ejs1.png)
+* 错误内容：Error: Failed to lookup view "bd-map.ejs" in views directory"./page" 
+
+![ejs1](./readme/error/ejs1.png)
 * 错误起因：-
 * 解决方法：原来`app.set('views', './page')`语句的第二个参数的相对路径为项目目录而不是server.ts的目录，把`./page` 改成`./src/page` 就可以了。
 
@@ -111,7 +116,9 @@ bd-map|GET|-|获取自定义百度地图
 **5. yarn 安装全局包后找不到命令**
 
 * 错误内容：-
-* 错误起因：安装 yarn global add create-react-native-module 后无法使用。![yarn1](./readme/error/yarn1.png)
+* 错误起因：安装 yarn global add create-react-native-module 后无法使用。
+
+![yarn1](./readme/error/yarn1.png)
 * 解决方法：我使用的是zsh，没有配置yarn的执行目录，将export P ATH="$PATH:`yarn global bin:$HOME/.config/yarn/global/node_modules/.bin"`添加到~/.zshrc文件即可。
 
 **6. getLastKnownLocation() 返回为null**
@@ -123,7 +130,9 @@ bd-map|GET|-|获取自定义百度地图
 **7. ReactNative 红色错误(待进一步学习)**
 
 * 错误内容：Value for message cannot be cast from ReadableNativeMap to String
-* 错误起因：编写 async 和 await 时出现的错误。通过Android返回的Promise是字符串，可以直接在Alert输出，但是在JS中new一个promise以后返回的是ReadableNativeMap类型，不能用在Alert.alert(str:string)方法中。![cast1](./readme/error/cast1.png)
+* 错误起因：编写 async 和 await 时出现的错误。通过Android返回的Promise是字符串，可以直接在Alert输出，但是在JS中new一个promise以后返回的是ReadableNativeMap类型，不能用在Alert.alert(str:string)方法中。
+
+![cast1](./readme/error/cast1.png)
 * 解决方法：将返回值res转化为string即可。
 
 ## 收获(学到的知识)
