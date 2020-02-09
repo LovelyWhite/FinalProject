@@ -5,6 +5,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.JsonWriter;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
@@ -17,6 +18,8 @@ import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,11 +28,9 @@ import javax.annotation.Nullable;
 
 
 public class GpsInfoModule extends ReactContextBaseJavaModule {
-    LocationListener locationListener = null;
+    Map<String,LocationListener> locationListeneries = new HashMap<>();
     private final ReactApplicationContext reactContext;
     LocationManager locationManager;
-    String startListenProvider;
-    Promise startListenPromise;
     public GpsInfoModule(ReactApplicationContext reactContext) {
         super(reactContext);
         this.reactContext = reactContext;
@@ -65,67 +66,83 @@ public class GpsInfoModule extends ReactContextBaseJavaModule {
     @SuppressLint("MissingPermission")
 
     @ReactMethod
-    public  void isListening(Promise promise){
-        if(locationListener == null){
+    public void isListening(Promise promise){
+        int size =locationListeneries.size();
+        if(size== 0){
             promise.resolve(false);
         }
-        else
-        {
-            promise.resolve(true);
+        else{
+            promise.resolve(size);
         }
     }
     @SuppressLint("MissingPermission")
     @ReactMethod
-    public void startListen(String provider, Double minTime, Float minDistance, Promise promise) {
-        if(locationListener==null)
-        {
-            locationListener = new LocationListener() {
-                @Override
-                public void onLocationChanged(Location location) {
-                    WritableMap map = Arguments.createMap();
-                    map.putString("provider",location.getProvider());
-                    map.putDouble("latitude",location.getLatitude());
-                    map.putDouble("longitude",location.getLongitude());
-                    map.putDouble("time",location.getTime());
-                    sendEvent(reactContext,"onLocationChanged",map);
-                }
+    public void startListen(String provider,String name, Double minTime, Float minDistance, Promise promise) {
+        try {
 
-                @Override
-                public void onStatusChanged(String provider, int status, Bundle extras) {
+            if(locationListeneries.containsKey(name)){
+                promise.reject("-1",name+" is exist");
+            }
+            else
+            {
+                LocationListener temp = new LocationListener() {
+                    @Override
+                    public void onLocationChanged(Location location) {
+                        WritableMap map = Arguments.createMap();
+                        map.putString("provider",location.getProvider());
+                        map.putDouble("latitude",location.getLatitude());
+                        map.putDouble("longitude",location.getLongitude());
+                        map.putDouble("time",location.getTime());
+                        sendEvent(reactContext,"onLocationChanged",map);
+                    }
 
-                }
+                    @Override
+                    public void onStatusChanged(String provider, int status, Bundle extras) {
 
-                @Override
-                public void onProviderEnabled(String provider) {
+                    }
 
-                }
+                    @Override
+                    public void onProviderEnabled(String provider) {
 
-                @Override
-                public void onProviderDisabled(String provider) {
+                    }
 
-                }
-            };
-            this.startListenPromise = promise;
-            this.startListenProvider = provider;
-            locationManager.requestLocationUpdates(provider,minTime.longValue(),minDistance,locationListener);
-            promise.resolve("listening...");
+                    @Override
+                    public void onProviderDisabled(String provider) {
+
+                    }
+                };
+                locationListeneries.put(name,temp);
+                locationManager.requestLocationUpdates(provider,minTime.longValue(),minDistance,temp);
+                JSONObject r = new JSONObject();
+                r.put("name",name);
+                r.put("size",locationListeneries.size());
+                promise.resolve(r.toString());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            promise.reject("-1","1");
+        }
+    }
+    public void stopListen(String name,Promise promise){
+        if(locationListeneries.size()==0){
+            promise.reject("-1","no listening");
         }
         else
         {
-            promise.reject("-1","a listen was added");
+            LocationListener temp = locationListeneries.get(name);
+            if(temp == null){
+                promise.reject("-1","no this name");
+            }
+            else
+            {
+                locationManager.removeUpdates(temp);
+                promise.resolve("listen "+name+" is removed");
+            }
         }
+
     }
-    public void stopListen(Promise promise){
-        if(locationListener!=null)
-        {
-            locationManager.removeUpdates(locationListener);
-            promise.resolve("listen is removed");
-        }
-        else{
-            promise.reject("-1","no listening");
-        }
-    }
-    private void sendEvent(ReactContext reactContext,
+
+    private void sendEvent(@NotNull ReactContext reactContext,
                            String eventName,
                            @Nullable Object params) {
         reactContext

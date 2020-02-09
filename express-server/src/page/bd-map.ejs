@@ -30,8 +30,7 @@
   document.addEventListener("message", function(event) {
     let data = event.data;
     let obj = JSON.parse(data);
-    // alert(obj.fun+'('+data+')')
-    obj.fun && eval(obj.fun + "(" + data + ")");
+    obj.fun && eval(obj.funName + "(" + data + ")");
   });
   function updatePosition(data) {
     let convertor = new BMap.Convertor();

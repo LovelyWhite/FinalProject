@@ -1,22 +1,44 @@
-import { NativeModules, NativeEventEmitter, Alert } from 'react-native';
+import { NativeModules, NativeEventEmitter } from 'react-native';
 
 const { GpsInfo } = NativeModules;
 
-export function addLocationChangedListener(fun) {
-
-   return new Promise((reslove, reject) => {
-        GpsInfo.isListening().then(res => {
-            if (res === true) {
-                let eventEmitter = new NativeEventEmitter(NativeModules.GpsInfo);
-                eventEmitter = eventEmitter.addListener('onLocationChanged', fun)
-                reslove("add locationChangedListener success")
-            }
-            else {
-                reject("please startListen first")
-            }
-        })
-    }
-    )
+export class LocationListener {
+  constructor(name, onLocationChanged) {
+    this.onLocationChanged = onLocationChanged;
+    this.name = name;
+  }
 }
 
-export default GpsInfo;
+export async function startListen(provider, minTime, minDistance, locationListener) {
+  let result;
+  let t = true;
+  await GpsInfo.startListen(provider, locationListener.name, minTime, minDistance).then(res => {
+    result = res;
+    let eventEmitter = new NativeEventEmitter(GpsInfo);
+    eventEmitter = eventEmitter.addListener(
+      'onLocationChanged',
+      locationListener.onLocationChanged,
+    );
+  }).catch(res => {
+    t = false
+    result = res;
+  });
+
+  return new Promise((resolve, reject) => {
+    if (t)
+      resolve(result)
+    else
+      reject(result)
+  });
+}
+export function stopListen(locationListener) {
+  let eventEmitter = new NativeEventEmitter(GpsInfo);
+  eventEmitter = eventEmitter.removeListener('onLocationChanged')
+  return GpsInfo.stopListen(locationListener.name);
+}
+export function isListening() {
+  return GpsInfo.isListening();
+}
+export function getAllProviders() {
+  return GpsInfo.getAllProviders();
+}
