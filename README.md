@@ -1,4 +1,4 @@
-# <img src='./readme/icon.png' height="20" width="20" style='margin-right:20px'> 多源手机信息采集平台(FinalDesign) ![GitHub license](https://img.shields.io/badge/license-GNUv3-blue.svg) ![react-native version](https://img.shields.io/badge/ReactNative-0.6.1-yellow.svg)
+# <img src='./readme/icon.png' height="20" width="20" style='margin-right:20px'> 多源手机信息采集平台(FinalProject) ![GitHub license](https://img.shields.io/badge/license-GNUv3-blue.svg) ![react-native version](https://img.shields.io/badge/ReactNative-0.6.1-yellow.svg)
 
 多源手机信息采集平台是一款能够使用移动设备进行传感器信息采集、分析和可视化的软件。
 
