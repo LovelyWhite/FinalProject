@@ -1,5 +1,14 @@
 # <img src='./readme/icon.png' height="20" width="20" style='margin-right:20px'> 多源手机信息采集平台(FinalProject) ![GitHub license](https://img.shields.io/badge/license-GNUv3-blue.svg) ![react-native version](https://img.shields.io/badge/ReactNative-0.6.1-yellow.svg)
 
+* [功能框架](#1)
+* [消息传递](#2)
+* [服务器接口定义](#3)
+* [随笔](#4)
+* [踩坑记录](#5)
+* [收获(学到的知识)](#6)
+* [参考](#7)
+* [版权声明](#8)
+
 多源手机信息采集平台是一款能够使用移动设备进行传感器信息采集、分析和可视化的软件。
 
 * **数据丰富：** 利用手机平台的传感器的多样性和可移动性，可以方便的在不同时间与空间进行大量的数据收集。可采集的数据有：[大气温度](https://developer.android.google.cn/reference/android/hardware/Sensor.html#TYPE_AMBIENT_TEMPERATURE)、[重力](https://developer.android.google.cn/reference/android/hardware/Sensor.html#TYPE_GRAVITY)、[环境地磁场](https://developer.android.google.cn/reference/android/hardware/Sensor.html#TYPE_MAGNETIC_FIELD)、[气压](https://developer.android.google.cn/reference/android/hardware/Sensor.html#TYPE_PRESSURE)、[相对湿度](https://developer.android.google.cn/reference/android/hardware/Sensor.html#TYPE_RELATIVE_HUMIDITY)、[设备温度](https://developer.android.google.cn/reference/android/hardware/Sensor.html#TYPE_TEMPERATURE)，详细传感器信息请访问[这个链接](https://developer.android.google.cn/guide/topics/sensors/sensors_overview)。
@@ -10,12 +19,12 @@
 
 * **可扩展性：** 本平台预先开发了一套应用处理接口，方便开发者后续扩展功能。
 
-## 功能框架
-### 手机端
+##  1. <a id='1'></a>功能框架
+###  1.1. 手机端
 
-### 服务器端
+###  1.2. 服务器端
 
-## 消息传递
+##  2.<a id='2'></a>消息传递
 
 * **Android<->ReactNative**
 
@@ -69,7 +78,7 @@
   
   webview端在dom初始化以后注册一个`message`事件的监听器，通过该监听器即可响应`postMessage`方法传过来的内容。
 
-## 服务器接口定义
+##  3. <a id='3'></a>服务器接口定义
 
 请求前缀 ：http://localhost:3000/api/{module}
 
@@ -77,11 +86,11 @@
 :-: | :-: | :-: | :-: |
 bd-map|GET|-|获取自定义百度地图
 
-## 随笔
+##  4. <a id='4'></a>随笔
 
 本项目是一个毕业设计项目，也是我的第一个React-Native 项目。其中的内容难免会有些错误，欢迎大家提Issue，我也会认真的完成这个项目的。觉得还不错的话欢迎Star，本人博客地址：[一只小白喵的进阶之路](https://lovelywhite.cn/)。
 
-## 踩坑记录
+##  5. <a id='5'></a>踩坑记录
 
 **1. expo-cli 安装的时候出错**
 
@@ -135,19 +144,19 @@ bd-map|GET|-|获取自定义百度地图
 ![cast1](./readme/error/cast1.png)
 * 解决方法：将返回值res转化为string即可。
 
-## 收获(学到的知识)
+##  6.<a id='6'></a>收获(学到的知识)
 
 1.Android内置GPS获取的坐标为角度坐标，采用的坐标系为WGS84，百度地图可使用`Convertor.translate(points: Array<BMap.Point>, from: number, to: number, callback: function)`变换为百度坐标。下面两个链接分别是百度地图中关于转换的API文档和详细参数参考
 [JavaScript API](http://lbsyun.baidu.com/cms/jsapi/reference/jsapi_reference_3_0.html#a7b55)
 [Web服务 API](http://lbsyun.baidu.com/index.php?title=webapi/guide/changeposition)
 
-## 参考
+##  7. <a id='7'></a>参考
 
-### 视频
+###  7.1. 视频
 
 * [Nodejs+Express+Mongo实战TodoList(共17讲)](https://www.bilibili.com/video/av20196752)
 * [Create native modules in react native for android | free code tutorials](https://www.youtube.com/watch?v=OEV3iArNpTM)
 
-## 版权声明
+##  8. <a id='8'></a>版权声明
 
 本软件遵循GNUv3开源协议。
