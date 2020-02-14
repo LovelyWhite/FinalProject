@@ -35,18 +35,26 @@ export default class PositionScreen extends React.Component<any, any> {
     ]).then(([a, b]) => {
       if (a === 'granted' && b === 'granted') {
         //权限获取成功
-      GpsInfo.startListen(
-          'gps',
-          3000,
-          0,
-          new GpsInfo.LocationListener('gps',event => {
-            sendMessageToWebview(this.webview, event, 'updatePosition');
-          }),
-        ).then(res=>{
-          console.log(res)
-        }).catch(res=>{
-          Alert.alert("提示",""+res)
-         })
+        setInterval(()=>{
+          let a = {"funName": "updatePosition", "latitude": 29.700910449028015, "longitude": 116.04512393474579, "provider": "gps", "time": 1581709575000};
+          this.setState({
+            geo:a
+          })
+          sendMessageToWebview(this.webview, a, 'updatePosition');
+        },3000);
+      // GpsInfo.startListen(
+      //     'passive',
+      //     3000,
+      //     0,
+      //     new GpsInfo.LocationListener('app',event => {
+      //       console.log(11111,event)
+      //       sendMessageToWebview(this.webview, event, 'updatePosition');
+      //     }),
+      //   ).then(res=>{
+      //     console.log(res)
+      //   }).catch(res=>{
+      //     Alert.alert("提示",""+res)
+      //    })
       }
     });
   }

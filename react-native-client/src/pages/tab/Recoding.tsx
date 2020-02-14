@@ -27,7 +27,7 @@ export default class RecodingScreen extends React.Component<any, any> {
     this._subscription = null;
   };
   componentDidMount() {
-    this._toggle();
+    // this._toggle();
   }
 
   componentWillUnmount() {

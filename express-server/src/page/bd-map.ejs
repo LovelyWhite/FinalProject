@@ -30,7 +30,7 @@
   document.addEventListener("message", function(event) {
     let data = event.data;
     let obj = JSON.parse(data);
-    obj.fun && eval(obj.funName + "(" + data + ")");
+    obj.funName && eval(obj.funName + "(" + data + ")");
   });
   function updatePosition(data) {
     let convertor = new BMap.Convertor();
@@ -38,7 +38,7 @@
     pointArr.push(new BMap.Point(data.longitude, data.latitude));
     convertor.translate(pointArr, 1, 5, data => {
       if (data.status === 0) {
-        map.centerAndZoom(data.points[0], 20);
+        map.centerAndZoom(data.points[0], 17);
       }
     });
   }
