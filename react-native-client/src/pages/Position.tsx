@@ -51,6 +51,9 @@ export default class PositionScreen extends React.Component<any, any> {
             3000,
             0,
             new GpsInfo.LocationListener('app',event => {
+              this.setState({
+                geo:event
+              })
               if(this.state.reGeo){
                 this.setState({
                   reGeo: false
