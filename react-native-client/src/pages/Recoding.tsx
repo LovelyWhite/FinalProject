@@ -1,7 +1,7 @@
 import React from 'react';
-import {Magnetometer} from 'expo-sensors';
-import {Subscription} from '@unimodules/core';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import { Magnetometer } from 'expo-sensors';
+import { Subscription } from '@unimodules/core';
+import { StyleSheet, Text, TouchableOpacity, View, StatusBar } from 'react-native';
 
 export default class RecodingScreen extends React.Component<any, any> {
   _subscription: Subscription | null;
@@ -18,7 +18,7 @@ export default class RecodingScreen extends React.Component<any, any> {
   }
   _subscribe = () => {
     this._subscription = Magnetometer.addListener(result => {
-      this.setState({MagnetometerData: result});
+      this.setState({ MagnetometerData: result });
     });
   };
 
@@ -51,28 +51,29 @@ export default class RecodingScreen extends React.Component<any, any> {
   };
 
   render() {
-    let {x, y, z} = this.state.MagnetometerData;
+    let { x, y, z } = this.state.MagnetometerData;
 
     return (
       <View style={styles.sensor}>
-      <Text>磁力计:</Text>
-      <Text>x: {x}</Text>
-      <Text>y: {y}</Text>
-      <Text>z: {z}</Text>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity onPress={this._toggle} style={styles.button}>
-          <Text>切换</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={this._slow}
-          style={[styles.button, styles.middleButton]}>
-          <Text>低速</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={this._fast} style={styles.button}>
-          <Text>高速</Text>
-        </TouchableOpacity>
+        <StatusBar translucent={true} backgroundColor="#FFF" barStyle="dark-content" />
+        <Text>磁力计:</Text>
+        <Text>x: {x}</Text>
+        <Text>y: {y}</Text>
+        <Text>z: {z}</Text>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity onPress={this._toggle} style={styles.button}>
+            <Text>切换</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={this._slow}
+            style={[styles.button, styles.middleButton]}>
+            <Text>低速</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={this._fast} style={styles.button}>
+            <Text>高速</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
     );
   }
 }

@@ -1,9 +1,6 @@
 package com.finalproject;
 
-import com.facebook.react.PackageList;
 import com.facebook.react.ReactActivity;
-import com.facebook.react.ReactPackage;
-import com.finalproject.custom.gpsInfo.GpsInfoPackage;
 
 public class MainActivity extends ReactActivity {
 

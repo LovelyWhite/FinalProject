@@ -13,6 +13,11 @@ import * as GpsInfo from '../custom/GpsInfo/index';
 import { sendMessageToWebview } from '../utils';
 import MenuButton from '../components/MenuButton';
 
+enum FLAGS {
+  PLAY,
+  PAUSE,
+  SYNC
+}
 
 export default class PositionScreen extends React.Component<any, any> {
   static navigationOptions = {
@@ -20,12 +25,19 @@ export default class PositionScreen extends React.Component<any, any> {
 
   }
   webview: React.ReactInstance | null;
+  locationListener: GpsInfo.LocationListener
   constructor(props: any) {
     super(props);
     this.webview = null;
+    this.locationListener = new GpsInfo.LocationListener('app', event => {
+      this.setState({
+        geo: event
+      })
+      sendMessageToWebview(this.webview, event, 'updatePosition');
+    })
     this.state = {
       selectedIndex: 0,
-      workState: false,
+      workState: FLAGS.PLAY,
       geo: {
         latitude: 0,
         longitude: 0,
@@ -34,44 +46,54 @@ export default class PositionScreen extends React.Component<any, any> {
       },
     };
     this.updateIndex = this.updateIndex.bind(this)
-    this.detectPosition = this.detectPosition.bind(this)
+    this.listenStateSwitch = this.listenStateSwitch.bind(this)
   }
   componentDidMount() { }
-  detectPosition() {
-    this.setState({
-      workState: true
-    })
-    Promise.all([
-      requestPermission(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION),
-      requestPermission(PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION),
-    ]).then(([a, b]) => {
-      if (a === 'granted' && b === 'granted') {
-        //权限获取成功
-        GpsInfo.startListen(
-          'gps',
-          3000,
-          0,
-          new GpsInfo.LocationListener('app', event => {
+  listenStateSwitch() {
+    if (this.state.workState === FLAGS.PLAY) {
+      this.setState({
+        workState: FLAGS.SYNC
+      })
+      Promise.all([
+        requestPermission(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION),
+        requestPermission(PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION),
+      ]).then(([a, b]) => {
+        if (a === 'granted' && b === 'granted') {
+          //权限获取成功
+          GpsInfo.startListen(
+            'gps',
+            3000,
+            0,
+            this.locationListener,
+          ).then(res => {
             this.setState({
-              geo: event
+              workState: FLAGS.PAUSE
             })
-            if (this.state.workState) {
-              this.setState({
-                workState: false
-              })
-            }
-            sendMessageToWebview(this.webview, event, 'updatePosition');
-          }),
-        ).then(res => {
-          console.log(res)
-        }).catch(res => {
-          Alert.alert("提示", "" + res)
+            console.log(res)
+          }).catch(res => {
+            this.setState({
+              workState: FLAGS.PLAY
+            })
+            Alert.alert("提示", "" + res)
+          })
+        }
+      });
+    }
+    else {
+      GpsInfo.stopListen(this.locationListener).then(res => {
+        this.setState({
+          workState: FLAGS.PLAY
         })
-      }
-    });
+      }).catch(res => {
+        Alert.alert("提示", "" + res)
+      })
+    }
   }
   updateIndex(selectedIndex: number) {
     this.setState({ selectedIndex })
+    if (selectedIndex === 0) {
+      this.props.navigation.navigate('Recoding')
+    }
   }
   render() {
     const buttons = [
@@ -111,20 +133,31 @@ export default class PositionScreen extends React.Component<any, any> {
         </View>
         <View style={{
           position: 'absolute',
-          bottom: 50,
-          left: 10,
+          bottom: 40,
+          left: 15,
         }}>
           <Button
-            disabled={this.state.workState}
-            buttonStyle={{ backgroundColor: '#00000044', width: 40, height: 40 }}
-            onPress={this.detectPosition}
-            loading={this.state.workState}
-            icon={<Icon name="ios-sync" size={20} color="#FFFFFF" />}
+            containerStyle={{ elevation: 1 }}
+            disabledStyle={{ backgroundColor: '#FFFFFF' }}
+            disabled={this.state.workState === FLAGS.SYNC}
+            buttonStyle={{ backgroundColor: '#FFFFFF', width: 40, height: 40 }}
+            onPress={this.listenStateSwitch}
+            loadingProps={{ color: '#000' }}
+            loading={this.state.workState === FLAGS.SYNC}
+            icon={() => {
+              let { workState } = this.state;
+              if (workState === FLAGS.PLAY) {
+                return < Icon name="ios-play" size={20} color="#000" />
+              }
+              else if (workState === FLAGS.PAUSE) {
+                return < Icon name="ios-pause" size={20} color="#000" />
+              }
+            }}
           />
         </View>
         <View style={{
           position: 'absolute',
-          top: 40,
+          bottom: 40,
           right: 10,
         }}>
           <ButtonGroup

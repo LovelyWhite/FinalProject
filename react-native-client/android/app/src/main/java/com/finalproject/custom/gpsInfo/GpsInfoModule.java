@@ -122,7 +122,8 @@ public class GpsInfoModule extends ReactContextBaseJavaModule {
             e.printStackTrace();
             promise.reject("-1","1");
         }
-    }
+    } 
+    @ReactMethod
     public void stopListen(String name,Promise promise){
         if(locationListeneries.size()==0){
             promise.reject("-1","no listening");
@@ -136,6 +137,7 @@ public class GpsInfoModule extends ReactContextBaseJavaModule {
             else
             {
                 locationManager.removeUpdates(temp);
+                locationListeneries.remove(name);
                 promise.resolve("listen "+name+" is removed");
             }
         }
