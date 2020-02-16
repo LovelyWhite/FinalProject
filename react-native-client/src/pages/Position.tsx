@@ -2,7 +2,7 @@ import React from 'react';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Button, ButtonGroup } from 'react-native-elements';
-import { View, Text , TouchableHighlight, Alert } from 'react-native';
+import { View, Text , TouchableHighlight, Alert, TimePickerAndroid } from 'react-native';
 import { serverAdress } from '../app.json';
 import WebView from 'react-native-webview';
 import {
@@ -59,7 +59,7 @@ export default class PositionScreen extends React.Component<any, any> {
                   reGeo: false
                 })
               }
-              sendMessageToWebview(this.webview, a, 'updatePosition');
+              sendMessageToWebview(this.webview, event, 'updatePosition');
             }),
           ).then(res=>{
             console.log(res)
@@ -74,7 +74,7 @@ export default class PositionScreen extends React.Component<any, any> {
   }
   render() {
     const buttons = [
-      {element:()=><MenuButton icon="ios-cube" description="监测" />},
+      {element:()=><MenuButton icon="ios-cube" description="数据" />},
       {element:()=><MenuButton icon="ios-apps" description="图层" />},
       {element:()=><MenuButton icon="ios-build" description="设置" />}]
     const { selectedIndex } = this.state
@@ -92,15 +92,15 @@ export default class PositionScreen extends React.Component<any, any> {
         />
         <View style={{
           position: 'absolute',
-          width:'50%',
+          width:'100%',
           top: 0,
           left: 0,
           backgroundColor: '#E5E9F2AA',
         }}>
-          <Text>Longitude:{this.state.geo.longitude}</Text>
-          <Text>Latitude:{this.state.geo.latitude}</Text>
-          <Text>Provider:{this.state.geo.provider}</Text>
-          <Text>Time:{this.state.geo.time}</Text>
+          <Text>经度:{this.state.geo.longitude}</Text>
+          <Text>纬度:{this.state.geo.latitude}</Text>
+          <Text>时间:{new Date(this.state.geo.time).toUTCString()}</Text>
+          <Text>数据提供:{this.state.geo.provider}</Text>
         </View>
         <View style={{
           position: 'absolute',
