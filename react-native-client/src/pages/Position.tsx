@@ -24,7 +24,7 @@ export default class PositionScreen extends React.Component<any, any> {
     this.webview = null;
     this.state = {
       selectedIndex: 0,
-      reGeo: false,
+      workState: false,
       geo: {
         latitude: 0,
         longitude: 0,
@@ -38,7 +38,7 @@ export default class PositionScreen extends React.Component<any, any> {
   componentDidMount() { }
   detectPosition() {
     this.setState({
-      reGeo: true
+      workState: true
     })
     Promise.all([
       requestPermission(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION),
@@ -54,9 +54,9 @@ export default class PositionScreen extends React.Component<any, any> {
               this.setState({
                 geo:event
               })
-              if(this.state.reGeo){
+              if(this.state.workState){
                 this.setState({
-                  reGeo: false
+                  workState: false
                 })
               }
               sendMessageToWebview(this.webview, event, 'updatePosition');
@@ -108,10 +108,10 @@ export default class PositionScreen extends React.Component<any, any> {
           left: 10,
         }}>
           <Button
-            disabled={this.state.reGeo}
+            disabled={this.state.workState}
             buttonStyle={{ backgroundColor: '#00000044',width:40,height:40 }}
             onPress={this.detectPosition}
-            loading={this.state.reGeo}
+            loading={this.state.workState}
             icon={<Icon name="ios-sync" size={20} color="#FFFFFF" />}
           />
         </View>
