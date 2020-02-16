@@ -91,8 +91,16 @@ export default class PositionScreen extends React.Component<any, any> {
   }
   updateIndex(selectedIndex: number) {
     this.setState({ selectedIndex })
-    if (selectedIndex === 0) {
-      this.props.navigation.navigate('Recoding')
+    switch (selectedIndex) {
+      case 0: { // 数据
+        this.props.navigation.navigate('Recoding')
+      } break;
+      case 1: { //图层
+
+      } break;
+      case 2: { //设置
+        this.props.navigation.navigate('Setting')
+      }
     }
   }
   render() {

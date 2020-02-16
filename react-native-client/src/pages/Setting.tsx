@@ -1,9 +1,13 @@
 import React from 'react';
-import {Text} from 'react-native';
+import { Text, StatusBar } from 'react-native';
+import { Divider } from 'react-native-elements';
 
 export default class SettingScreen extends React.Component<any, any> {
   render() {
-    return <Text>设置</Text>;
+    return (<><StatusBar translucent={true} backgroundColor="#FFF" barStyle="dark-content" />
+      <Text>设置</Text>
+    </>
+    );
   }
 }
 
