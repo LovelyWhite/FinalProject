@@ -12,6 +12,7 @@
       android:roundIcon="@mipmap/ic_launcher_round"
       android:allowBackup="false"
       android:theme="@style/AppTheme">
+      <item name="android:windowTranslucentStatus">true</item>
       <meta-data
         android:name="com.baidu.lbsapi.API_KEY"
         android:value="qyGBdMOGruAKndIm1GF6sG4w5IG3Hs9T" />

@@ -2,7 +2,7 @@ import React from 'react';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Button, ButtonGroup } from 'react-native-elements';
-import { View, Text , TouchableHighlight, Alert, TimePickerAndroid } from 'react-native';
+import { View, Text, TouchableHighlight, Alert, TimePickerAndroid, StatusBar } from 'react-native';
 import { serverAdress } from '../app.json';
 import WebView from 'react-native-webview';
 import {
@@ -12,11 +12,12 @@ import {
 import * as GpsInfo from '../custom/GpsInfo/index';
 import { sendMessageToWebview } from '../utils';
 import MenuButton from '../components/MenuButton';
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+
 
 export default class PositionScreen extends React.Component<any, any> {
   static navigationOptions = {
     headerShown: false,
+
   }
   webview: React.ReactInstance | null;
   constructor(props: any) {
@@ -33,7 +34,7 @@ export default class PositionScreen extends React.Component<any, any> {
       },
     };
     this.updateIndex = this.updateIndex.bind(this)
-    this.detectPosition=this.detectPosition.bind(this)
+    this.detectPosition = this.detectPosition.bind(this)
   }
   componentDidMount() { }
   detectPosition() {
@@ -47,25 +48,25 @@ export default class PositionScreen extends React.Component<any, any> {
       if (a === 'granted' && b === 'granted') {
         //权限获取成功
         GpsInfo.startListen(
-            'gps',
-            3000,
-            0,
-            new GpsInfo.LocationListener('app',event => {
+          'gps',
+          3000,
+          0,
+          new GpsInfo.LocationListener('app', event => {
+            this.setState({
+              geo: event
+            })
+            if (this.state.workState) {
               this.setState({
-                geo:event
+                workState: false
               })
-              if(this.state.workState){
-                this.setState({
-                  workState: false
-                })
-              }
-              sendMessageToWebview(this.webview, event, 'updatePosition');
-            }),
-          ).then(res=>{
-            console.log(res)
-          }).catch(res=>{
-            Alert.alert("提示",""+res)
-           })
+            }
+            sendMessageToWebview(this.webview, event, 'updatePosition');
+          }),
+        ).then(res => {
+          console.log(res)
+        }).catch(res => {
+          Alert.alert("提示", "" + res)
+        })
       }
     });
   }
@@ -74,15 +75,16 @@ export default class PositionScreen extends React.Component<any, any> {
   }
   render() {
     const buttons = [
-      {element:()=><MenuButton icon="ios-cube" description="数据" />},
-      {element:()=><MenuButton icon="ios-apps" description="图层" />},
-      {element:()=><MenuButton icon="ios-build" description="设置" />}]
+      { element: () => <MenuButton icon="ios-cube" description="数据" /> },
+      { element: () => <MenuButton icon="ios-apps" description="图层" /> },
+      { element: () => <MenuButton icon="ios-build" description="设置" /> }]
     const { selectedIndex } = this.state
     return (
       <View style={{
         width: '100%',
         height: '100%',
       }}>
+        <StatusBar translucent={true} backgroundColor="#E5E9F2AA" barStyle="dark-content" />
         <WebView
           ref={'webview'}
           source={{ uri: serverAdress + 'page/bd-map' }}
@@ -92,15 +94,20 @@ export default class PositionScreen extends React.Component<any, any> {
         />
         <View style={{
           position: 'absolute',
-          width:'100%',
-          top: 0,
+          width: '100%',
+          top: StatusBar.currentHeight,
           left: 0,
+          padding: 5,
           backgroundColor: '#E5E9F2AA',
+          flexDirection: 'row',
+          justifyContent: 'space-between'
         }}>
-          <Text>经度:{this.state.geo.longitude}</Text>
-          <Text>纬度:{this.state.geo.latitude}</Text>
-          <Text>时间:{new Date(this.state.geo.time).toUTCString()}</Text>
-          <Text>数据提供:{this.state.geo.provider}</Text>
+          <View>
+            <Text>经度:{this.state.geo.longitude}</Text>
+            <Text>纬度:{this.state.geo.latitude}</Text>
+            <Text>时间:{new Date(this.state.geo.time).toUTCString()}</Text>
+          </View>
+          <Text style={{ fontSize: 14, color: '#AAA' }}>{this.state.geo.provider}</Text>
         </View>
         <View style={{
           position: 'absolute',
@@ -109,7 +116,7 @@ export default class PositionScreen extends React.Component<any, any> {
         }}>
           <Button
             disabled={this.state.workState}
-            buttonStyle={{ backgroundColor: '#00000044',width:40,height:40 }}
+            buttonStyle={{ backgroundColor: '#00000044', width: 40, height: 40 }}
             onPress={this.detectPosition}
             loading={this.state.workState}
             icon={<Icon name="ios-sync" size={20} color="#FFFFFF" />}
@@ -122,14 +129,14 @@ export default class PositionScreen extends React.Component<any, any> {
         }}>
           <ButtonGroup
             underlayColor={'#AAA'}
-            Component={TouchableHighlight }
-            textStyle={{color:'white',fontSize:13}}
-            innerBorderStyle={{width:0}}
-            selectedButtonStyle={{backgroundColor:'#FFFFFF'}}
+            Component={TouchableHighlight}
+            textStyle={{ color: 'white', fontSize: 13 }}
+            innerBorderStyle={{ width: 0 }}
+            selectedButtonStyle={{ backgroundColor: '#FFFFFF' }}
             onPress={this.updateIndex}
             selectedIndex={selectedIndex}
             buttons={buttons}
-            containerStyle={{height: 145, width: 35, flexDirection: "column",backgroundColor: '#FFFFFF'}}
+            containerStyle={{ height: 160, width: 40, flexDirection: "column", backgroundColor: '#FFFFFF' }}
           />
         </View>
       </View>
