@@ -4,7 +4,7 @@ import { Divider } from 'react-native-elements';
 
 export default class SettingScreen extends React.Component<any, any> {
   render() {
-    return (<><StatusBar translucent={true} backgroundColor="#FFF" barStyle="dark-content" />
+    return (<>
       <Text>设置</Text>
     </>
     );
