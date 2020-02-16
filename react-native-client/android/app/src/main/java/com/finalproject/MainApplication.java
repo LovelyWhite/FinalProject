@@ -1,5 +1,6 @@
 package com.finalproject;
 
+import com.finalproject.custom.gpsInfo.GpsInfoPackage;
 import com.finalproject.generated.BasePackageList;
 import org.unimodules.adapters.react.ModuleRegistryAdapter;
 import org.unimodules.adapters.react.ReactModuleRegistryProvider;
@@ -30,6 +31,7 @@ public class MainApplication extends Application implements ReactApplication {
           List<ReactPackage> packages = new PackageList(this).getPackages();
           // Packages that cannot be autolinked yet can be added manually here, for example:
           // packages.add(new MyReactNativePackage());
+            packages.add(new GpsInfoPackage());
          List<ReactPackage> unimodules = Arrays.<ReactPackage>asList(
          new ModuleRegistryAdapter(mModuleRegistryProvider)
          );

@@ -2,9 +2,14 @@ import React from 'react';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Button, ButtonGroup } from 'react-native-elements';
-import { View, Text, TouchableHighlight, Alert, StatusBar } from 'react-native';
+import { View, Text, TouchableHighlight, Alert, TimePickerAndroid, StatusBar } from 'react-native';
 import { serverAdress } from '../app.json';
 import WebView from 'react-native-webview';
+import {
+  request as requestPermission,
+  PERMISSIONS,
+} from 'react-native-permissions';
+import * as GpsInfo from '../custom/GpsInfo/index';
 import { sendMessageToWebview } from '../utils';
 import MenuButton from '../components/MenuButton';
 
@@ -20,10 +25,16 @@ export default class PositionScreen extends React.Component<any, any> {
 
   }
   webview: React.ReactInstance | null;
-  //sendMessageToWebview(this.webview, event, 'updatePosition');
+  locationListener: GpsInfo.LocationListener
   constructor(props: any) {
     super(props);
     this.webview = null;
+    this.locationListener = new GpsInfo.LocationListener('app', event => {
+      this.setState({
+        geo: event
+      })
+      sendMessageToWebview(this.webview, event, 'updatePosition');
+    })
     this.state = {
       selectedIndex: 0,
       workState: FLAGS.PLAY,
@@ -43,9 +54,39 @@ export default class PositionScreen extends React.Component<any, any> {
       this.setState({
         workState: FLAGS.SYNC
       })
-
+      Promise.all([
+        requestPermission(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION),
+        requestPermission(PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION),
+      ]).then(([a, b]) => {
+        if (a === 'granted' && b === 'granted') {
+          //权限获取成功
+          GpsInfo.startListen(
+            'gps',
+            3000,
+            0,
+            this.locationListener,
+          ).then(res => {
+            this.setState({
+              workState: FLAGS.PAUSE
+            })
+            console.log(res)
+          }).catch(res => {
+            this.setState({
+              workState: FLAGS.PLAY
+            })
+            Alert.alert("提示", "" + res)
+          })
+        }
+      });
     }
     else {
+      GpsInfo.stopListen(this.locationListener).then(res => {
+        this.setState({
+          workState: FLAGS.PLAY
+        })
+      }).catch(res => {
+        Alert.alert("提示", "" + res)
+      })
     }
   }
   updateIndex(selectedIndex: number) {
