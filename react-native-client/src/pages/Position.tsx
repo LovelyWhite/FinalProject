@@ -1,8 +1,8 @@
 import React from 'react';
-
-import Icon from 'react-native-vector-icons/Ionicons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Button, ButtonGroup } from 'react-native-elements';
-import { View, Text, TouchableHighlight, Alert, TimePickerAndroid, StatusBar } from 'react-native';
+import { View, Text, TouchableHighlight, Alert, StatusBar } from 'react-native';
 import { serverAdress } from '../app.json';
 import WebView from 'react-native-webview';
 import {
@@ -12,6 +12,7 @@ import {
 import * as GpsInfo from '../custom/GpsInfo/index';
 import { sendMessageToWebview } from '../utils';
 import MenuButton from '../components/MenuButton';
+import { Searchbar } from 'react-native-paper';
 
 enum FLAGS {
   PLAY,
@@ -35,8 +36,9 @@ export default class PositionScreen extends React.Component<any, any> {
       sendMessageToWebview(this.webview, event, 'updatePosition');
     })
     this.state = {
+      ready: true,//地图是否加载
       selectedIndex: 0,
-      workState: FLAGS.PLAY,
+      workState: FLAGS.PLAY, firstQuery: '',
       geo: {
         latitude: 0,
         longitude: 0,
@@ -46,6 +48,8 @@ export default class PositionScreen extends React.Component<any, any> {
     };
     this.updateIndex = this.updateIndex.bind(this)
     this.listenStateSwitch = this.listenStateSwitch.bind(this)
+    this.reloadMap = this.reloadMap.bind(this)
+
   }
   componentDidMount() { }
   async listenStateSwitch() {
@@ -54,7 +58,6 @@ export default class PositionScreen extends React.Component<any, any> {
         requestPermission(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION),
         requestPermission(PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION),
       ]);
-      debugger
       if (a === 'granted' && b === 'granted') {
         this.setState({
           workState: FLAGS.SYNC
@@ -69,7 +72,6 @@ export default class PositionScreen extends React.Component<any, any> {
           this.setState({
             workState: FLAGS.PAUSE
           })
-          console.log(res)
         }).catch(res => {
           this.setState({
             workState: FLAGS.PLAY
@@ -87,6 +89,9 @@ export default class PositionScreen extends React.Component<any, any> {
         Alert.alert("提示", "" + res)
       })
     }
+  }
+  reloadMap() {
+    this.webview && this.webview.reload()
   }
   updateIndex(selectedIndex: number) {
     this.setState({ selectedIndex })
@@ -113,15 +118,28 @@ export default class PositionScreen extends React.Component<any, any> {
         width: '100%',
         height: '100%',
       }}>
-        <StatusBar translucent={true} backgroundColor="#E5E9F2AA" barStyle="dark-content" />
+        <StatusBar translucent={true} backgroundColor="#00000000" barStyle="dark-content" />
         <WebView
           ref={'webview'}
+          scalesPageToFit={false}
           source={{ uri: serverAdress + 'page/bd-map' }}
+          startInLoadingState={true}
           onLoadEnd={() => {
             this.webview = this.refs.webview;
           }}
+          onError={() => {
+            this.setState({
+              ready: false
+            })
+          }}
+          renderError={() =>
+            <View
+              style={{ backgroundColor: '#FFF', width: '100%', height: '100%', justifyContent: "center", alignItems: "center" }}>
+              <MaterialIcons name={'error-outline'} size={40} />
+              <Text style={{ fontSize: 12 }}>地图加载失败</Text>
+            </View>}
         />
-        <View style={{
+        {/* <View style={{
           position: 'absolute',
           width: '100%',
           top: StatusBar.currentHeight,
@@ -137,15 +155,16 @@ export default class PositionScreen extends React.Component<any, any> {
             <Text>时间:{new Date(this.state.geo.time).toUTCString()}</Text>
           </View>
           <Text style={{ fontSize: 14, color: '#AAA' }}>{this.state.geo.provider}</Text>
-        </View>
+        </View> */}
+
         <View style={{
           position: 'absolute',
           bottom: 40,
           left: 15,
         }}>
           <Button
-            containerStyle={{ elevation: 1 }}
-            disabledStyle={{ backgroundColor: '#FFFFFF' }}
+            containerStyle={{ borderColor: '#CCC', borderWidth: 1 }}
+            disabledStyle={{ backgroundColor: '#AAAAAA' }}
             disabled={this.state.workState === FLAGS.SYNC}
             buttonStyle={{ backgroundColor: '#FFFFFF', width: 40, height: 40 }}
             onPress={this.listenStateSwitch}
@@ -154,14 +173,28 @@ export default class PositionScreen extends React.Component<any, any> {
             icon={() => {
               let { workState } = this.state;
               if (workState === FLAGS.PLAY) {
-                return < Icon name="ios-play" size={20} color="#000" />
+                return < Ionicons name="ios-play" size={20} color="#000" />
               }
               else if (workState === FLAGS.PAUSE) {
-                return < Icon name="ios-pause" size={20} color="#000" />
+                return < Ionicons name="ios-pause" size={20} color="#000" />
               }
             }}
           />
         </View>
+        {!this.state.ready && <View style={{
+          position: 'absolute',
+          bottom: 85,
+          left: 15,
+        }}>
+          <Button
+            containerStyle={{ borderColor: '#CCC', borderWidth: 1 }}
+            disabledStyle={{ backgroundColor: '#AAAAAA' }}
+            buttonStyle={{ backgroundColor: '#FFFFFF', width: 40, height: 40 }}
+            onPress={this.reloadMap}
+            icon={< Ionicons name="md-sync" size={20} color="#000" />}
+            type="clear"
+          />
+        </View>}
         <View style={{
           position: 'absolute',
           bottom: 40,
@@ -176,10 +209,19 @@ export default class PositionScreen extends React.Component<any, any> {
             onPress={this.updateIndex}
             selectedIndex={selectedIndex}
             buttons={buttons}
-            containerStyle={{ height: 160, width: 40, flexDirection: "column", backgroundColor: '#FFFFFF' }}
+            containerStyle={{ height: 180, width: 45, flexDirection: "column", backgroundColor: '#FFFFFF' }}
           />
         </View>
-      </View>
+        <View style={{ position: 'absolute', top: (15 + StatusBar.currentHeight), left: 20, right: 20 }}>
+          <Searchbar
+            inputStyle={{ fontSize: 15 }}
+            style={{ opacity: 0.9 }}
+            placeholder="搜索"
+            onChangeText={query => { this.setState({ firstQuery: query }); }}
+            value={this.state.firstQuery}
+          />
+        </View>
+      </View >
     );
   }
 }
