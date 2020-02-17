@@ -17,8 +17,6 @@ import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
-import org.jetbrains.annotations.NotNull;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -52,7 +50,7 @@ public class GpsInfoModule extends ReactContextBaseJavaModule {
         return constants;
     }
 
-    @NotNull
+
     @Override
     public String getName() {
         return "GpsInfo";
@@ -144,7 +142,7 @@ public class GpsInfoModule extends ReactContextBaseJavaModule {
 
     }
 
-    private void sendEvent(@NotNull ReactContext reactContext,
+    private void sendEvent(ReactContext reactContext,
                            String eventName,
                            @Nullable Object params) {
         reactContext

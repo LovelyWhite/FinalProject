@@ -22,7 +22,6 @@ enum FLAGS {
 export default class PositionScreen extends React.Component<any, any> {
   static navigationOptions = {
     headerShown: false,
-
   }
   webview: React.ReactInstance | null;
   locationListener: GpsInfo.LocationListener
@@ -49,35 +48,35 @@ export default class PositionScreen extends React.Component<any, any> {
     this.listenStateSwitch = this.listenStateSwitch.bind(this)
   }
   componentDidMount() { }
-  listenStateSwitch() {
+  async listenStateSwitch() {
     if (this.state.workState === FLAGS.PLAY) {
-      this.setState({
-        workState: FLAGS.SYNC
-      })
-      Promise.all([
+      let [a, b] = await Promise.all([
         requestPermission(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION),
         requestPermission(PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION),
-      ]).then(([a, b]) => {
-        if (a === 'granted' && b === 'granted') {
-          //权限获取成功
-          GpsInfo.startListen(
-            'gps',
-            3000,
-            0,
-            this.locationListener,
-          ).then(res => {
-            this.setState({
-              workState: FLAGS.PAUSE
-            })
-            console.log(res)
-          }).catch(res => {
-            this.setState({
-              workState: FLAGS.PLAY
-            })
-            Alert.alert("提示", "" + res)
+      ]);
+      debugger
+      if (a === 'granted' && b === 'granted') {
+        this.setState({
+          workState: FLAGS.SYNC
+        })
+        //权限获取成功
+        GpsInfo.startListen(
+          'gps',
+          3000,
+          0,
+          this.locationListener,
+        ).then(res => {
+          this.setState({
+            workState: FLAGS.PAUSE
           })
-        }
-      });
+          console.log(res)
+        }).catch(res => {
+          this.setState({
+            workState: FLAGS.PLAY
+          })
+          Alert.alert("提示", "" + res)
+        })
+      }
     }
     else {
       GpsInfo.stopListen(this.locationListener).then(res => {
