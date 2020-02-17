@@ -14,7 +14,7 @@ const StackNavigator = createStackNavigator({
   },
   Setting: {
     screen: SettingScreen,
-  },
+  }
 });
 
 export default StackNavigator;
