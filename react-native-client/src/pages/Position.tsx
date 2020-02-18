@@ -1,8 +1,8 @@
 import React from 'react';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { Button, ButtonGroup, Tooltip } from 'react-native-elements';
-import { View, Text, TouchableHighlight, Alert, StatusBar, TouchableWithoutFeedback, Animated, Easing } from 'react-native';
+import { Button, ButtonGroup, Tooltip, Overlay } from 'react-native-elements';
+import { View, Text, TouchableHighlight, Alert, StatusBar, TouchableWithoutFeedback, Animated, Easing, Surface, ScrollView } from 'react-native';
 import { serverAdress } from '../app.json';
 import WebView from 'react-native-webview';
 import SplashScreen from 'react-native-splash-screen'
@@ -13,8 +13,8 @@ import {
 import * as GpsInfo from '../custom/GpsInfo/index';
 import { sendMessageToWebview } from '../utils';
 import MenuButton from '../components/MenuButton';
-import { Searchbar } from 'react-native-paper';
-
+import { Searchbar, Chip } from 'react-native-paper';
+import RBSheet from "react-native-raw-bottom-sheet";
 enum FLAGS {
   PLAY,
   PAUSE,
@@ -27,6 +27,7 @@ export default class PositionScreen extends React.Component<any, any> {
   }
   static statusHeight = StatusBar.currentHeight ? StatusBar.currentHeight : 15
   webview: any;
+  RBSheet: any;
   locationListener: GpsInfo.LocationListener;
   touchXY: number;
   touchTime: number;
@@ -109,7 +110,7 @@ export default class PositionScreen extends React.Component<any, any> {
         this.props.navigation.navigate('Recoding')
       } break;
       case 1: { //图层
-
+        this.RBSheet.open();
       } break;
       case 2: { //设置
         this.props.navigation.navigate('Setting')
@@ -167,9 +168,25 @@ export default class PositionScreen extends React.Component<any, any> {
             renderError={() => <View style={{ backgroundColor: '#FFF', width: '100%', height: '100%', justifyContent: "center", alignItems: "center" }}><MaterialIcons name={'error-outline'} size={40} /><Text style={{ fontSize: 12 }}>地图加载失败</Text></View>}
           />
         </TouchableWithoutFeedback>
-        <Animated.View>
+        <RBSheet
+          closeOnDragDown={true}
+          animationType={'slide'}
+          ref={ref => {
+            this.RBSheet = ref;
+          }}
+          customStyles={{
+            wrapper: { backgroundColor: '#00000000' },
 
-        </Animated.View>
+          }}
+          height={200}
+          duration={200}>
+          <ScrollView
+            contentContainerStyle={{ flexDirection: "row", flexWrap: 'wrap' }}
+            alwaysBounceVertical={true}>
+            <Chip style={{ margin: 3, paddingHorizontal: 3 }} icon={'crosshairs-gps'} onPress={() => console.log(111)}>显示坐标</Chip>
+          </ScrollView>
+
+        </RBSheet>
         <Animated.View
           pointerEvents={this.state.show ? 'box-none' : 'none'}
           style={{ top: this.state.disappearDistance, position: 'absolute', width: '100%', height: '50%', backgroundColor: '#00000000', opacity: this.state.disappearOpacity }}>
