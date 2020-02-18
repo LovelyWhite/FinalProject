@@ -10,9 +10,9 @@ export default class MenuButton extends React.Component<{
         super(props);
     }
     render() {
-        return (<View style={{alignItems:"center"}}>
+        return (<View style={{ alignItems: "center" }}>
             <Ionicons name={this.props.icon} size={20}></Ionicons>
-            <Text style={{fontSize:11,textAlign:"center"}}>{this.props.description}</Text>
-            </View>)
+            <Text style={{ fontSize: 11, textAlign: "center" }}>{this.props.description}</Text>
+        </View>)
     }
 }

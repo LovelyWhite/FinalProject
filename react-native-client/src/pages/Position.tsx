@@ -1,10 +1,11 @@
 import React from 'react';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { Button, ButtonGroup } from 'react-native-elements';
+import { Button, ButtonGroup, Tooltip } from 'react-native-elements';
 import { View, Text, TouchableHighlight, Alert, StatusBar, TouchableWithoutFeedback, Animated, Easing } from 'react-native';
 import { serverAdress } from '../app.json';
 import WebView from 'react-native-webview';
+import SplashScreen from 'react-native-splash-screen'
 import {
   request as requestPermission,
   PERMISSIONS,
@@ -59,7 +60,7 @@ export default class PositionScreen extends React.Component<any, any> {
     this.reloadMap = this.reloadMap.bind(this)
 
   }
-  componentDidMount() { }
+  componentDidMount() { SplashScreen.hide(); }
   async listenStateSwitch() {
     if (this.state.workState === FLAGS.PLAY) {
       let [a, b] = await Promise.all([
@@ -154,7 +155,6 @@ export default class PositionScreen extends React.Component<any, any> {
               });
             }
             else {
-
             }
           }}
         >
@@ -167,7 +167,9 @@ export default class PositionScreen extends React.Component<any, any> {
             renderError={() => <View style={{ backgroundColor: '#FFF', width: '100%', height: '100%', justifyContent: "center", alignItems: "center" }}><MaterialIcons name={'error-outline'} size={40} /><Text style={{ fontSize: 12 }}>地图加载失败</Text></View>}
           />
         </TouchableWithoutFeedback>
+        <Animated.View>
 
+        </Animated.View>
         <Animated.View
           pointerEvents={this.state.show ? 'box-none' : 'none'}
           style={{ top: this.state.disappearDistance, position: 'absolute', width: '100%', height: '50%', backgroundColor: '#00000000', opacity: this.state.disappearOpacity }}>
@@ -195,6 +197,7 @@ export default class PositionScreen extends React.Component<any, any> {
           </View>
           <Text style={{ fontSize: 14, color: '#AAA' }}>{this.state.geo.provider}</Text>
         </View> */}
+
           <Button
             containerStyle={{
               borderColor: '#e3e3e3',

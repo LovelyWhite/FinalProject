@@ -1,44 +1,57 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-    <style type="text/css">
-      body,
-      html,
-      #map {
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-        margin: 0;
-        font-family: "微软雅黑";
-      }
-    </style>
-    <script
-      type="text/javascript"
-      src="http://api.map.baidu.com/api?v=2.0&ak=Oqcpznej7OXFZe8nqaAMeL4lpQ0ttAFr"
-    ></script>
-    <title>位置</title>
-  </head>
-  <body>
-    <div id="map"></div>
-  </body>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+  <style type="text/css">
+    body,
+    html,
+    #map {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      margin: 0;
+      font-family: "微软雅黑";
+    }
+
+    .anchorBL {
+      visibility: hidden;
+    }
+  </style>
+  <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=Oqcpznej7OXFZe8nqaAMeL4lpQ0ttAFr"></script>
+  <title>位置</title>
+</head>
+
+<body>
+  <div id="map"></div>
+</body>
+
 </html>
 <script type="text/javascript">
-  var map = new BMap.Map("map");
-  map.centerAndZoom(new BMap.Point(116.404, 39.915), 14);
-  document.addEventListener("message", function(event) {
+  var map = new BMap.Map("map", {
+    enableAutoResize: true,
+    enableMapClick: false,
+  });
+  map.disableDoubleClickZoom();
+  map.disablePinchToZoom()
+  map.centerAndZoom(new BMap.Point(116.404, 39.915), 12);
+  document.addEventListener("message", function (event) {
     let data = event.data;
     let obj = JSON.parse(data);
     obj.funName && eval(obj.funName + "(" + data + ")");
   });
+  let marker = null
   function updatePosition(data) {
     let convertor = new BMap.Convertor();
-    var pointArr = [];
+    let pointArr = [];
     pointArr.push(new BMap.Point(data.longitude, data.latitude));
     convertor.translate(pointArr, 1, 5, data => {
       if (data.status === 0) {
-        map.centerAndZoom(data.points[0], 14);
+        marker && map.removeOverlay(marker)
+        marker = new BMap.Marker(data.points[0]);
+        map.addOverlay(marker);
+        map.centerAndZoom(data.points[0], 12);
       }
     });
   }
