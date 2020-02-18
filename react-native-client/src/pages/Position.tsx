@@ -2,7 +2,7 @@ import React from 'react';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Button, ButtonGroup, Tooltip, Overlay } from 'react-native-elements';
-import { View, Text, TouchableHighlight, Alert, StatusBar, TouchableWithoutFeedback, Animated, Easing, Surface, ScrollView } from 'react-native';
+import { View, Text, TouchableHighlight, Alert, StatusBar, TouchableWithoutFeedback, Animated, Easing, Surface, ScrollView, GestureResponderEvent } from 'react-native';
 import { serverAdress } from '../app.json';
 import WebView from 'react-native-webview';
 import SplashScreen from 'react-native-splash-screen'
@@ -15,6 +15,7 @@ import { sendMessageToWebview } from '../utils';
 import MenuButton from '../components/MenuButton';
 import { Searchbar, Chip } from 'react-native-paper';
 import RBSheet from "react-native-raw-bottom-sheet";
+import Loading from '../components/Loading';
 enum FLAGS {
   PLAY,
   PAUSE,
@@ -28,12 +29,12 @@ export default class PositionScreen extends React.Component<any, any> {
   static statusHeight = StatusBar.currentHeight ? StatusBar.currentHeight : 15
   webview: any;
   RBSheet: any;
+  searchBar: any;
   locationListener: GpsInfo.LocationListener;
   touchXY: number;
   touchTime: number;
   constructor(props: any) {
     super(props);
-    this.webview = null;
     this.locationListener = new GpsInfo.LocationListener('app', event => {
       this.setState({
         geo: event
@@ -48,7 +49,9 @@ export default class PositionScreen extends React.Component<any, any> {
       disappearOpacity: new Animated.Value(1),
       ready: true,//地图是否加载
       selectedIndex: 0,
-      workState: FLAGS.PLAY, firstQuery: '',
+      workState: FLAGS.PLAY,//传感器工作状态
+      mapSync: FLAGS.SYNC,//地图状态
+      firstQuery: '',
       geo: {
         latitude: 0,
         longitude: 0,
@@ -59,9 +62,12 @@ export default class PositionScreen extends React.Component<any, any> {
     this.updateIndex = this.updateIndex.bind(this)
     this.listenStateSwitch = this.listenStateSwitch.bind(this)
     this.reloadMap = this.reloadMap.bind(this)
-
+    this.pressIn = this.pressIn.bind(this)
+    this.pressOut = this.pressOut.bind(this)
   }
-  componentDidMount() { SplashScreen.hide(); }
+  componentDidMount() {
+    SplashScreen.hide();
+  }
   async listenStateSwitch() {
     if (this.state.workState === FLAGS.PLAY) {
       let [a, b] = await Promise.all([
@@ -89,6 +95,9 @@ export default class PositionScreen extends React.Component<any, any> {
           Alert.alert("提示", "" + res)
         })
       }
+      else {
+        Alert.alert("提示", "未授权")
+      }
     }
     else {
       GpsInfo.stopListen(this.locationListener).then(res => {
@@ -101,6 +110,9 @@ export default class PositionScreen extends React.Component<any, any> {
     }
   }
   reloadMap() {
+    this.setState({
+      mapSync: FLAGS.SYNC
+    })
     this.webview && this.webview.reload()
   }
   updateIndex(selectedIndex: number) {
@@ -117,6 +129,42 @@ export default class PositionScreen extends React.Component<any, any> {
       }
     }
   }
+  //定义移入操作
+  pressIn(r: GestureResponderEvent) {
+    this.touchTime = r.nativeEvent.timestamp
+    this.touchXY = Math.pow(r.nativeEvent.pageX, 2) + Math.pow(r.nativeEvent.pageY, 2)
+  }
+  pressOut(r: GestureResponderEvent) {
+    if (this.searchBar.isFocused()) {
+      this.searchBar.blur()
+    }
+    else {
+      if (this.state.ready) {
+        if (Math.abs(this.touchXY - (Math.pow(r.nativeEvent.pageX, 2) + Math.pow(r.nativeEvent.pageY, 2))) < 0.00000001) {
+          this.state.disappearDistance.stopAnimation()
+          this.state.disappearOpacity.stopAnimation()
+          Animated.parallel([
+            Animated.timing(this.state.disappearDistance, {
+              toValue: this.state.show ? -20 : 0,
+              duration: 100,
+              easing: Easing.linear,
+            }),
+            Animated.timing(this.state.disappearOpacity, {
+              toValue: this.state.show ? 0 : 1,
+              duration: 50,
+              easing: Easing.linear,
+            })
+          ]).start(() => {
+            this.setState({
+              show: !this.state.show
+            })
+          });
+        }
+        else {
+        }
+      }
+    }
+  }
   render() {
     const buttons = [
       { element: () => <MenuButton icon="ios-cube" description="数据" /> },
@@ -130,42 +178,31 @@ export default class PositionScreen extends React.Component<any, any> {
       }}>
         <StatusBar translucent={true} backgroundColor="#00000000" barStyle="dark-content" />
         <TouchableWithoutFeedback
-          onPressIn={(r) => {
-            this.touchTime = r.nativeEvent.timestamp
-            this.touchXY = Math.pow(r.nativeEvent.pageX, 2) + Math.pow(r.nativeEvent.pageY, 2)
-          }}
-          onPressOut={(r) => {
-            if (Math.abs(this.touchXY - (Math.pow(r.nativeEvent.pageX, 2) + Math.pow(r.nativeEvent.pageY, 2))) < 0.00000001) {
-              this.state.disappearDistance.stopAnimation()
-              this.state.disappearOpacity.stopAnimation()
-              Animated.parallel([
-                Animated.timing(this.state.disappearDistance, {
-                  toValue: this.state.show ? -20 : 0,
-                  duration: 100,
-                  easing: Easing.linear,
-                }),
-                Animated.timing(this.state.disappearOpacity, {
-                  toValue: this.state.show ? 0 : 1,
-                  duration: 50,
-                  easing: Easing.linear,
-                })
-              ]).start(() => {
-                this.setState({
-                  show: !this.state.show
-                })
-              });
-            }
-            else {
-            }
-          }}
+          onPressIn={this.pressIn}
+          onPressOut={this.pressOut}
         >
-          <WebView ref={'webview'}
+          <WebView ref={ref => {
+            this.webview = ref
+          }}
+            onLoadEnd={() => {
+              this.setState({
+                mapSync: FLAGS.PLAY
+              })
+            }}
             scalesPageToFit={false}
             source={{ uri: serverAdress + 'page/bd-map' }}
             startInLoadingState={true}
-            onLoadEnd={() => { this.webview = this.refs.webview; }}
             onError={() => { this.setState({ ready: false }) }}
-            renderError={() => <View style={{ backgroundColor: '#FFF', width: '100%', height: '100%', justifyContent: "center", alignItems: "center" }}><MaterialIcons name={'error-outline'} size={40} /><Text style={{ fontSize: 12 }}>地图加载失败</Text></View>}
+            renderError={() =>
+              <TouchableWithoutFeedback
+                onPressIn={this.pressIn}
+                onPressOut={this.pressOut}>
+                <View style={{ backgroundColor: '#FFFFFF', width: '100%', height: '100%', justifyContent: "center", alignItems: "center" }}>
+                  <MaterialIcons name={'error-outline'} size={35} />
+                  <Text style={{ fontSize: 12 }}>地图加载失败</Text>
+                </View>
+              </TouchableWithoutFeedback>}
+            renderLoading={() => <Loading />}
           />
         </TouchableWithoutFeedback>
         <RBSheet
@@ -176,7 +213,6 @@ export default class PositionScreen extends React.Component<any, any> {
           }}
           customStyles={{
             wrapper: { backgroundColor: '#00000000' },
-
           }}
           height={200}
           duration={200}>
@@ -191,6 +227,9 @@ export default class PositionScreen extends React.Component<any, any> {
           pointerEvents={this.state.show ? 'box-none' : 'none'}
           style={{ top: this.state.disappearDistance, position: 'absolute', width: '100%', height: '50%', backgroundColor: '#00000000', opacity: this.state.disappearOpacity }}>
           <Searchbar
+            ref={ref => {
+              this.searchBar = ref
+            }}
             inputStyle={{ fontSize: 15 }}
             style={{ marginTop: 10 + PositionScreen.statusHeight, marginHorizontal: 10 }}
             placeholder="搜索"
@@ -255,6 +294,7 @@ export default class PositionScreen extends React.Component<any, any> {
               top: 137,
               right: 10
             }}
+            disabled={this.state.mapSync === FLAGS.SYNC}
             disabledStyle={{ backgroundColor: '#AAAAAA' }}
             buttonStyle={{ backgroundColor: '#FFFFFF', width: 38, height: 38 }}
             onPress={this.reloadMap}

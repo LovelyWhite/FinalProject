@@ -2,9 +2,9 @@ import React from "react";
 import { Overlay } from "react-native-elements";
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { Animated, Easing, View } from "react-native";
-export default class Loading extends React.Component<{ text: string | undefined; visiable: boolean }, { rotateValue: Animated.Value }>
+export default class Loading extends React.Component<any, { rotateValue: Animated.Value }>
 {
-  constructor(props: Readonly<{ text: string | undefined; visiable: boolean }>) {
+  constructor(props: any) {
     super(props);
     this.state = {
       rotateValue: new Animated.Value(0),
@@ -20,7 +20,13 @@ export default class Loading extends React.Component<{ text: string | undefined;
   }
   render() {
     return (
-      <Overlay width={80} height={80} overlayStyle={{ justifyContent: "center", alignItems: "center" }} isVisible={this.props.visiable}>
+      <View style={{
+        width: '100%',
+        height: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#FFFFFF'
+      }}>
         <Animated.View style={{
           width: 30,
           height: 30,
@@ -33,7 +39,8 @@ export default class Loading extends React.Component<{ text: string | undefined;
         }} >
           <AntDesign style={{ width: 30, height: 30 }} name={'loading2'} size={30} ></AntDesign>
         </Animated.View>
-      </Overlay>
+      </View>
+
     )
   }
 }
