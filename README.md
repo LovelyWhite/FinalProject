@@ -157,6 +157,16 @@ bd-map|GET|-|获取自定义百度地图
 * [Nodejs+Express+Mongo实战TodoList(共17讲)](https://www.bilibili.com/video/av20196752)
 * [Create native modules in react native for android | free code tutorials](https://www.youtube.com/watch?v=OEV3iArNpTM)
 
+### 7.2. 第三方库
+
+* [react-native-elements](https://react-native-elements.github.io/react-native-elements/)
+* [react-native-paper](https://callstack.github.io/react-native-paper/index.html)
+* [react-native-permissions](https://www.npmjs.com/package/react-native-permissions)
+* [react-native-raw-bottom-sheet](https://www.npmjs.com/package/react-native-raw-bottom-sheet)
+* [react-native-splash-screen](https://www.npmjs.com/package/react-native-splash-screen)
+* [react-native-vector-icons](https://www.npmjs.com/package/react-native-vector-icons)
+
+
 ##  8. <a id='8'></a>版权声明
 
 本软件遵循GNUv3开源协议。
