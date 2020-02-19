@@ -134,33 +134,36 @@ export default class PositionScreen extends React.Component<any, any> {
     this.touchTime = r.nativeEvent.timestamp
     this.touchXY = Math.pow(r.nativeEvent.pageX, 2) + Math.pow(r.nativeEvent.pageY, 2)
   }
+  xxx: any;
   pressOut(r: GestureResponderEvent) {
-    if (this.searchBar.isFocused()) {
-      this.searchBar.blur()
-    }
-    else {
-      if (this.state.ready) {
-        if (Math.abs(this.touchXY - (Math.pow(r.nativeEvent.pageX, 2) + Math.pow(r.nativeEvent.pageY, 2))) < 0.00000001) {
-          this.state.disappearDistance.stopAnimation()
-          this.state.disappearOpacity.stopAnimation()
-          Animated.parallel([
-            Animated.timing(this.state.disappearDistance, {
-              toValue: this.state.show ? -20 : 0,
-              duration: 100,
-              easing: Easing.linear,
-            }),
-            Animated.timing(this.state.disappearOpacity, {
-              toValue: this.state.show ? 0 : 1,
-              duration: 50,
-              easing: Easing.linear,
-            })
-          ]).start(() => {
-            this.setState({
-              show: !this.state.show
-            })
-          });
-        }
-        else {
+    if (r.nativeEvent.changedTouches.length === 1) {
+      if (this.searchBar.isFocused()) {
+        this.searchBar.blur()
+      }
+      else {
+        if (this.state.ready) {
+          if (Math.abs(this.touchXY - (Math.pow(r.nativeEvent.pageX, 2) + Math.pow(r.nativeEvent.pageY, 2))) < 0.00000001) {
+            this.state.disappearDistance.stopAnimation()
+            this.state.disappearOpacity.stopAnimation()
+            Animated.parallel([
+              Animated.timing(this.state.disappearDistance, {
+                toValue: this.state.show ? -20 : 0,
+                duration: 100,
+                easing: Easing.linear,
+              }),
+              Animated.timing(this.state.disappearOpacity, {
+                toValue: this.state.show ? 0 : 1,
+                duration: 50,
+                easing: Easing.linear,
+              })
+            ]).start(() => {
+              this.setState({
+                show: !this.state.show
+              })
+            });
+          }
+          else {
+          }
         }
       }
     }
@@ -179,8 +182,7 @@ export default class PositionScreen extends React.Component<any, any> {
         <StatusBar translucent={true} backgroundColor="#00000000" barStyle="dark-content" />
         <TouchableWithoutFeedback
           onPressIn={this.pressIn}
-          onPressOut={this.pressOut}
-        >
+          onPressOut={this.pressOut}>
           <WebView ref={ref => {
             this.webview = ref
           }}
@@ -227,6 +229,7 @@ export default class PositionScreen extends React.Component<any, any> {
           pointerEvents={this.state.show ? 'box-none' : 'none'}
           style={{ top: this.state.disappearDistance, position: 'absolute', width: '100%', height: '50%', backgroundColor: '#00000000', opacity: this.state.disappearOpacity }}>
           <Searchbar
+            // @ts-ignore
             ref={ref => {
               this.searchBar = ref
             }}
