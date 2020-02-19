@@ -144,6 +144,14 @@ bd-map|GET|-|获取自定义百度地图
 ![cast1](./readme/error/cast1.png)
 * 解决方法：将返回值res转化为string即可。
 
+**8. ReactNative 红色错误**
+
+* 错误内容：Ended a touch event which was not counted in `trackedTouchCount`
+* 错误起因：无意之间截图发现的错误。
+
+![touchEvent1](./readme/error/touchEvent1.jpg)
+* 解决方法：将`console.reportErrorsAsExceptions = false`添加到`index.js`。[_Link](https://github.com/facebook/react-native/issues/15059)
+
 ##  6.<a id='6'></a>收获(学到的知识)
 
 1.Android内置GPS获取的坐标为角度坐标，采用的坐标系为WGS84，百度地图可使用`Convertor.translate(points: Array<BMap.Point>, from: number, to: number, callback: function)`变换为百度坐标。下面两个链接分别是百度地图中关于转换的API文档和详细参数参考
