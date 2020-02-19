@@ -197,7 +197,7 @@ export default class PositionScreen extends React.Component<any, any> {
               <TouchableWithoutFeedback
                 onPressIn={this.pressIn}
                 onPressOut={this.pressOut}>
-                <View style={{ backgroundColor: '#FFFFFF', width: '100%', height: '100%', justifyContent: "center", alignItems: "center" }}>
+                <View style={{ position: 'absolute', flex: 1, backgroundColor: '#FFFFFF', width: '100%', height: '100%', justifyContent: "center", alignItems: "center" }}>
                   <MaterialIcons name={'error-outline'} size={35} />
                   <Text style={{ fontSize: 12 }}>地图加载失败</Text>
                 </View>
